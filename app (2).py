@@ -423,26 +423,25 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
         elif subject == "Maths":
             opening = random.choice(opening_8_maths)
-            # Year 8 Maths uses {name} placeholders - need to replace them
-            attitude_text = fix_pronouns_in_text(attitude_8_maths[att].replace("{name}", ""), p, p_poss)
+            attitude_text = fix_pronouns_in_text(attitude_8_maths[att], p, p_poss)
             attitude_sentence = f"{opening} {name} {attitude_text}"
             if not attitude_sentence.endswith('.'):
                 attitude_sentence += '.'
             
-            maths_text = fix_pronouns_in_text(maths_8_maths[achieve].replace("{name}", p), p, p_poss)
+            maths_text = fix_pronouns_in_text(maths_8_maths[achieve], p, p_poss)
             if maths_text[0].islower():
                 maths_text = f"{p} {maths_text}"
             reading_sentence = maths_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
-            target_text = fix_pronouns_in_text(target_8_maths[target].replace("{name}", p), p, p_poss)
-            reading_target_sentence = f"For the next term, {lowercase_first(target_text)}"
+            target_text = fix_pronouns_in_text(target_8_maths[target], p, p_poss)
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
             writing_target_sentence = ""
-            closer_sentence = random.choice(closer_8_maths).replace("{name}", name)
+            closer_sentence = random.choice(closer_8_maths)
             writing_sentence = ""
             
         else:  # Science
