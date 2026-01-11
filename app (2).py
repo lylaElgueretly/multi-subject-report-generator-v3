@@ -47,8 +47,7 @@ try:
     from statements_year5_Maths import (
         opening_phrases as maths_opening_phrases,
         attitude_bank as maths_attitude_bank,
-        number_bank as maths_number_bank,
-        problem_solving_bank as maths_problem_solving_bank,
+        achievement_bank as maths_achievement_bank,
         target_bank as maths_target_bank,
         closer_bank as maths_closer_bank
     )
@@ -206,10 +205,7 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
         elif subject == "Maths":
             opening = random.choice(maths_opening_phrases)
             attitude_text = fix_pronouns_in_text(maths_attitude_bank[att], p, p_poss)
-            # For Year 5 Maths, we need to combine number and problem solving banks
-            number_text = fix_pronouns_in_text(maths_number_bank.get(achieve, ""), p, p_poss)
-            problem_text = fix_pronouns_in_text(maths_problem_solving_bank.get(achieve, ""), p, p_poss)
-            reading_text = f"{number_text}. {problem_text}" if problem_text else number_text
+            reading_text = fix_pronouns_in_text(maths_achievement_bank[achieve], p, p_poss)
             writing_text = ""  # not used
             reading_target_text = fix_pronouns_in_text(maths_target_bank[target], p, p_poss)
             writing_target_text = ""
