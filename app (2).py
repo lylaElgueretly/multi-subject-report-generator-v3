@@ -1,6 +1,6 @@
 # =========================================
 # MULTI-SUBJECT REPORT COMMENT GENERATOR - Secure Streamlit Version
-# Supports English, Math, Science, Years 5, 7 & 8
+# Supports English, Maths, Science • Years 5, 7 & 8
 # Enhanced with security, privacy, and UX features
 # =========================================
 
@@ -39,20 +39,21 @@ if 'app_initialized' not in st.session_state:
 
 # ========== IMPORT STATEMENTS ==========
 try:
-    # English
-    from statements_year5_English import opening_phrases as opening_5_eng, attitude_bank as attitude_5_eng, reading_bank as reading_5_eng, writing_bank as writing_5_eng, reading_target_bank as target_5_eng, writing_target_bank as target_write_5_eng, closer_bank as closer_5_eng
-    from statements_year7_English import opening_phrases as opening_7_eng, attitude_bank as attitude_7_eng, reading_bank as reading_7_eng, writing_bank as writing_7_eng, reading_target_bank as target_7_eng, writing_target_bank as target_write_7_eng, closer_bank as closer_7_eng
-    from statements_year8_English import opening_phrases as opening_8_eng, attitude_bank as attitude_8_eng, reading_bank as reading_8_eng, writing_bank as writing_8_eng, reading_target_bank as target_8_eng, writing_target_bank as target_write_8_eng, closer_bank as closer_8_eng
+    # Year 5
+    from statements_year5_English import *
+    from statements_year5_Maths import *
+    from statements_year5_Science import *
 
-    # Math
-    from statements_year5_Math import opening_phrases as opening_5_math, attitude_bank as attitude_5_math, reading_bank as reading_5_math, writing_bank as writing_5_math, reading_target_bank as target_5_math, writing_target_bank as target_write_5_math, closer_bank as closer_5_math
-    from statements_year7_Math import opening_phrases as opening_7_math, attitude_bank as attitude_7_math, reading_bank as reading_7_math, writing_bank as writing_7_math, reading_target_bank as target_7_math, writing_target_bank as target_write_7_math, closer_bank as closer_7_math
-    from statements_year8_Math import opening_phrases as opening_8_math, attitude_bank as attitude_8_math, reading_bank as reading_8_math, writing_bank as writing_8_math, reading_target_bank as target_8_math, writing_target_bank as target_write_8_math, closer_bank as closer_8_math
+    # Year 7
+    from statements_year7_English import *
+    from statements_year7_Maths import *
+    from statements_year7_science import *
 
-    # Science
-    from statements_year5_Science import opening_phrases as opening_5_sci, attitude_bank as attitude_5_sci, science_bank as science_5_sci, target_bank as target_5_sci, closer_bank as closer_5_sci
-    from statements_year7_Science import opening_phrases as opening_7_sci, attitude_bank as attitude_7_sci, science_bank as science_7_sci, target_bank as target_7_sci, closer_bank as closer_7_sci
-    from statements_year8_Science import opening_phrases as opening_8_sci, attitude_bank as attitude_8_sci, science_bank as science_8_sci, target_bank as target_8_sci, closer_bank as closer_8_sci
+    # Year 8
+    from statements_year8_English import *
+    from statements_year8_Maths import *
+    from statements_year8_science import *
+
 except ImportError as e:
     st.error(f"Missing required statement files: {e}")
     st.stop()
@@ -101,21 +102,26 @@ def process_csv_securely(uploaded_file):
 # ========== HELPER FUNCTIONS ==========
 def get_pronouns(gender):
     gender = gender.lower()
-    if gender == "male": return "he","his"
-    if gender == "female": return "she","her"
-    return "they","their"
+    if gender == "male":
+        return "he", "his"
+    elif gender == "female":
+        return "she", "her"
+    return "they", "their"
 
 def lowercase_first(text):
     return text[0].lower() + text[1:] if text else ""
 
 def truncate_comment(comment, target=TARGET_CHARS):
-    if len(comment) <= target: return comment
-    truncated = comment[:target].rstrip(" ,;.") 
-    if "." in truncated: truncated = truncated[:truncated.rfind(".")+1]
+    if len(comment) <= target:
+        return comment
+    truncated = comment[:target].rstrip(" ,;.")
+    if "." in truncated:
+        truncated = truncated[:truncated.rfind(".")+1]
     return truncated
 
 def fix_pronouns_in_text(text, pronoun, possessive):
-    if not text: return text
+    if not text:
+        return text
     text = re.sub(r'\bhe\b', pronoun, text, flags=re.IGNORECASE)
     text = re.sub(r'\bHe\b', pronoun.capitalize(), text)
     text = re.sub(r'\bhis\b', possessive, text, flags=re.IGNORECASE)
@@ -126,56 +132,83 @@ def fix_pronouns_in_text(text, pronoun, possessive):
     text = re.sub(r'\bherself\b', f"{pronoun}self", text, flags=re.IGNORECASE)
     return text
 
-# ========== COMMENT GENERATOR ==========
+# ========== GENERATE COMMENT ==========
 def generate_comment(subject, year, name, gender, att, achieve, target, pronouns, attitude_target=None):
     p, p_poss = pronouns
     name = sanitize_input(name)
 
-    # Select banks
-    if subject=="English":
-        if year==5: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_5_eng, attitude_5_eng, reading_5_eng, writing_5_eng, target_5_eng, target_write_5_eng, closer_5_eng
-        elif year==7: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_7_eng, attitude_7_eng, reading_7_eng, writing_7_eng, target_7_eng, target_write_7_eng, closer_7_eng
-        elif year==8: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_8_eng, attitude_8_eng, reading_8_eng, writing_8_eng, target_8_eng, target_write_8_eng, closer_8_eng
-    elif subject=="Math":
-        if year==5: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_5_math, attitude_5_math, reading_5_math, writing_5_math, target_5_math, target_write_5_math, closer_5_math
-        elif year==7: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_7_math, attitude_7_math, reading_7_math, writing_7_math, target_7_math, target_write_7_math, closer_7_math
-        elif year==8: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_8_math, attitude_8_math, reading_8_math, writing_8_math, target_8_math, target_write_8_math, closer_8_math
-    elif subject=="Science":
-        if year==5: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_5_sci, attitude_5_sci, science_5_sci, None, target_5_sci, None, closer_5_sci
-        elif year==7: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_7_sci, attitude_7_sci, science_7_sci, None, target_7_sci, None, closer_7_sci
-        elif year==8: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_8_sci, attitude_8_sci, science_8_sci, None, target_8_sci, None, closer_8_sci
+    # Determine banks dynamically
+    bank_prefix = f"{subject.lower()}_{year}"
+    try:
+        opening_bank = globals()[f"opening_{bank_prefix}"]
+        attitude_bank = globals()[f"attitude_{bank_prefix}"]
+        closer_bank = globals()[f"closer_{bank_prefix}"]
+    except KeyError:
+        st.error(f"Banks not found for {subject} Year {year}")
+        return "Error generating comment."
 
-    # Compose comment
-    opening_phrase = random.choice(opening) if opening else ""
-    closer_phrase = random.choice(closer) if closer else ""
-    attitude_text = fix_pronouns_in_text(attitude.get(att,""), p, p_poss)
-    attitude_sentence = f"{opening_phrase} {name} {attitude_text}".strip()
-    if attitude_sentence and not attitude_sentence.endswith('.'): attitude_sentence += '.'
+    if subject == "English":
+        try:
+            reading_bank = globals()[f"reading_{bank_prefix}"]
+            writing_bank = globals()[f"writing_{bank_prefix}"]
+            target_read_bank = globals()[f"target_{bank_prefix}"]
+            target_write_bank = globals()[f"target_write_{bank_prefix}"]
+        except KeyError:
+            st.error(f"English banks not found for Year {year}")
+            return "Error generating comment."
+    elif subject == "Science":
+        try:
+            reading_bank = globals()[f"science_{bank_prefix}"]
+            target_read_bank = globals()[f"target_{bank_prefix}"]
+            writing_bank = ""
+            target_write_bank = ""
+        except KeyError:
+            st.error(f"Science banks not found for Year {year}")
+            return "Error generating comment."
+    elif subject == "Maths":
+        try:
+            reading_bank = globals()[f"maths_{bank_prefix}"]
+            target_read_bank = globals()[f"target_{bank_prefix}"]
+            writing_bank = ""
+            target_write_bank = ""
+        except KeyError:
+            st.error(f"Maths banks not found for Year {year}")
+            return "Error generating comment."
+    else:
+        return "Invalid subject"
 
-    reading_text = fix_pronouns_in_text(reading.get(achieve,""), p, p_poss)
-    if reading_text and reading_text[0].islower(): reading_text = f"{p} {reading_text}"
-    reading_sentence = f"In reading, {reading_text}" if subject=="English" else reading_text
-    if reading_sentence and not reading_sentence.endswith('.'): reading_sentence += '.'
+    # Compose sentences
+    opening = random.choice(opening_bank)
+    attitude_text = fix_pronouns_in_text(attitude_bank[att], p, p_poss)
+    attitude_sentence = f"{opening} {name} {attitude_text}."
+    
+    achievement_text = fix_pronouns_in_text(reading_bank[achieve], p, p_poss)
+    if achievement_text[0].islower():
+        achievement_text = f"{p} {achievement_text}"
+    reading_sentence = achievement_text if achievement_text.endswith('.') else achievement_text + '.'
 
-    if writing:
-        writing_text = fix_pronouns_in_text(writing.get(achieve,""), p, p_poss)
-        if writing_text and writing_text[0].islower(): writing_text = f"{p} {writing_text}"
-        writing_sentence = f"In writing, {writing_text}"
-        if writing_sentence and not writing_sentence.endswith('.'): writing_sentence += '.'
-    else: writing_sentence = ""
-
-    reading_target_text = fix_pronouns_in_text(reading_target.get(target,""), p, p_poss)
-    reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}" if reading_target_text else ""
-    if reading_target_sentence and not reading_target_sentence.endswith('.'): reading_target_sentence += '.'
-
-    writing_target_text = fix_pronouns_in_text(writing_target.get(target,""), p, p_poss) if writing_target else ""
-    writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}" if writing_target_text else ""
-    if writing_target_sentence and not writing_target_sentence.endswith('.'): writing_target_sentence += '.'
+    reading_target_text = fix_pronouns_in_text(target_read_bank[target], p, p_poss)
+    reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}."
+    
+    if writing_bank:
+        writing_text = fix_pronouns_in_text(writing_bank[achieve], p, p_poss)
+        if writing_text[0].islower():
+            writing_text = f"{p} {writing_text}"
+        writing_sentence = writing_text if writing_text.endswith('.') else writing_text + '.'
+        
+        target_write_text = fix_pronouns_in_text(target_write_bank[target], p, p_poss)
+        writing_target_sentence = f"Additionally, {p} should {lowercase_first(target_write_text)}."
+    else:
+        writing_sentence = ""
+        writing_target_sentence = ""
+    
+    closer_sentence = random.choice(closer_bank)
 
     attitude_target_sentence = ""
     if attitude_target:
         attitude_target_sentence = f" {lowercase_first(sanitize_input(attitude_target))}"
-        if not attitude_target_sentence.endswith('.'): attitude_target_sentence += '.'
+        if not attitude_target_sentence.endswith('.'):
+            attitude_target_sentence += '.'
 
     comment_parts = [
         attitude_sentence + attitude_target_sentence,
@@ -183,17 +216,181 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
         writing_sentence,
         reading_target_sentence,
         writing_target_sentence,
-        closer_phrase
+        closer_sentence
     ]
 
     comment = " ".join([c for c in comment_parts if c])
-    if not comment.endswith('.'): comment += '.'
     comment = truncate_comment(comment, TARGET_CHARS)
-    if not comment.endswith('.'): comment = comment.rstrip(' ,;') + '.'
+    if not comment.endswith('.'):
+        comment = comment.rstrip(' ,;') + '.'
+
     return comment
 
-# ========== THE REST OF THE APP UI ==========
-# Your original Streamlit layout, forms, CSV handling, download section,
-# privacy info, and footer remain unchanged. They will now call
-# this updated generate_comment() function, and it fully supports
-# English, Math, Science for Years 5, 7, 8.
+# ========== STREAMLIT LAYOUT ==========
+
+with st.sidebar:
+    st.title("📚 Navigation")
+    app_mode = st.radio("Choose Mode", ["Single Student", "Batch Upload", "Privacy Info"])
+    st.markdown("---")
+    st.markdown("### 🔒 Privacy Features")
+    st.info("""
+    - No data stored on servers
+    - All processing in memory
+    - Auto-deletion of temp files
+    - Input sanitization
+    - Rate limiting enabled
+    """)
+    if st.button("🔄 Clear All Data", type="secondary", use_container_width=True):
+        st.session_state.clear()
+        st.session_state.app_initialized = True
+        st.session_state.upload_count = 0
+        st.session_state.last_upload_time = datetime.now()
+        st.success("All data cleared!")
+        st.rerun()
+    st.markdown("---")
+    st.caption("v2.6 • Teacher-Focused Edition")
+
+# Main columns
+col1, col2 = st.columns([1,4])
+with col1:
+    try: st.image("logo.png", use_column_width=True)
+    except:
+        st.markdown("<div style='text-align: center;'><div style='font-size: 72px;'>📚</div></div>", unsafe_allow_html=True)
+with col2:
+    st.title("Multi-Subject Report Comment Generator")
+    st.caption("~499 characters per comment • Secure • No data retention")
+
+st.warning("""
+**PRIVACY NOTICE:** All data is processed in memory only. No files are stored on our servers. 
+Close browser tab to completely erase all data. For use with anonymized student data only.
+""", icon="🔒")
+
+# Progress tracker
+st.subheader("🎯 Three Easy Steps")
+if 'progress' not in st.session_state:
+    st.session_state.progress = 1
+
+step_col1, step_col2, step_col3 = st.columns(3)
+def step_box(col, step_num, title, description):
+    with col:
+        is_current = st.session_state.progress == step_num
+        bg_color = '#e6f3ff' if is_current else '#f8f9fa'
+        st.markdown(f"""
+        <div style='text-align: center; padding: 8px 5px; margin: 2px 0; background-color: {bg_color}; border-radius: 8px; border-left: 4px solid #1E88E5; font-size: 0.9em;'>
+            <div style='font-size: 1.2em; margin-bottom: 2px;'>{'✅' if st.session_state.progress > step_num else f'{step_num}.'} {title}</div>
+            <div style='font-size: 0.85em; color: #666;'>{description}</div>
+        </div>
+        """, unsafe_allow_html=True)
+step_box(step_col1, 1, "Select", "Choose student details")
+step_box(step_col2, 2, "Generate", "Create the comment")
+step_box(step_col3, 3, "Download", "Export your reports")
+st.markdown("<br>", unsafe_allow_html=True)
+
+# ========== SINGLE STUDENT MODE ==========
+if app_mode == "Single Student":
+    st.subheader("👤 Single Student Entry")
+    if 'form_submitted' not in st.session_state:
+        st.session_state.form_submitted = False
+    with st.form("single_student_form", clear_on_submit=True):
+        col1, col2 = st.columns(2)
+        with col1:
+            subject = st.selectbox("Subject", ["English", "Maths", "Science"])
+            year = st.selectbox("Year", [5, 7, 8])
+            name = st.text_input("Student Name", placeholder="Enter first name only", key='student_name_input')
+            gender = st.selectbox("Gender", ["Male", "Female"])
+        with col2:
+            att = st.selectbox("Attitude Band", options=[90,85,80,75,70,65,60,55,40], index=3)
+            achieve = st.selectbox("Achievement Band", options=[90,85,80,75,70,65,60,55,40], index=3)
+            target = st.selectbox("Target Band", options=[90,85,80,75,70,65,60,55,40], index=3)
+            st.caption("💡 Use dropdowns for faster input. Tab key moves between fields.")
+        attitude_target = st.text_area("Optional Attitude Next Steps", placeholder="E.g., continue to participate actively in class discussions...", height=60, key='attitude_target_input')
+        col_submit = st.columns([3,1])
+        with col_submit[1]:
+            submitted = st.form_submit_button("🚀 Generate Comment", use_container_width=True)
+    if submitted and name:
+        if not validate_upload_rate(): st.stop()
+        pronouns = get_pronouns(gender)
+        comment = generate_comment(subject, year, name, gender, att, achieve, target, pronouns, st.session_state.get('attitude_target_input',''))
+        char_count = len(comment)
+        st.session_state.progress = 2
+        st.session_state.form_submitted = True
+        st.subheader("📝 Generated Comment")
+        st.text_area("", comment, height=200, key="comment_display")
+        col_stats = st.columns(3)
+        with col_stats[0]: st.metric("Character Count", f"{char_count}/{TARGET_CHARS}")
+        with col_stats[1]: st.metric("Words", len(comment.split()))
+        with col_stats[2]: st.success("✓ Good length") if char_count < TARGET_CHARS-50 else st.warning("Near limit")
+        if 'all_comments' not in st.session_state: st.session_state.all_comments = []
+        st.session_state.all_comments.append({'name':name,'subject':subject,'year':year,'comment':comment,'timestamp':datetime.now().strftime("%Y-%m-%d %H:%M")})
+        if st.session_state.form_submitted:
+            st.components.v1.html("<script>window.parent.document.querySelector('section.main').scrollTo(0, 0);</script>", height=0)
+            st.session_state.form_submitted = False
+        col_reset = st.columns([3,1])
+        with col_reset[1]:
+            if st.button("➕ Add Another Student", type="secondary", use_container_width=True):
+                st.session_state.student_name_input = ""
+                st.session_state.attitude_target_input = ""
+                st.session_state.progress = 1
+                st.rerun()
+
+# ========== BATCH UPLOAD MODE ==========
+elif app_mode == "Batch Upload":
+    st.subheader("📁 Batch Upload (CSV)")
+    st.info("""
+    **CSV Format Required:**
+    - Columns: Student Name, Gender, Subject, Year, Attitude, Achievement, Target
+    - Gender: Male/Female
+    - Subject: English/Maths/Science
+    - Year: 5, 7, 8
+    - Bands: 90,85,80,75,70,65,60,55,40
+    """)
+    example_csv = """Student Name,Gender,Subject,Year,Attitude,Achievement,Target
+Aseel,Female,English,7,75,80,85
+Mohamed,Male,Science,8,80,75,80
+Sarah,Female,Maths,5,85,90,85"""
+    st.download_button("📥 Download Example CSV", data=example_csv, file_name="example_students.csv", mime="text/csv")
+    uploaded_file = st.file_uploader("Choose CSV file", type=['csv'])
+    if uploaded_file:
+        if not validate_upload_rate(): st.stop()
+        is_valid, msg = validate_file(uploaded_file)
+        if not is_valid: st.error(msg); st.stop()
+        with st.spinner("Processing CSV securely..."):
+            df = process_csv_securely(uploaded_file)
+        if df is not None:
+            st.success(f"Processed {len(df)} students successfully")
+            with st.expander("📋 Preview Data (First 5 rows)"):
+                st.dataframe(df.head())
+            if st.button("🚀 Generate All Comments", type="primary"):
+                if 'all_comments' not in st.session_state: st.session_state.all_comments = []
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+                for idx, row in df.iterrows():
+                    progress = (idx+1)/len(df)
+                    progress_bar.progress(progress)
+                    status_text.text(f"Processing {idx+1}/{len(df)}: {row.get('Student Name','Student')}")
+                    try:
+                        pronouns = get_pronouns(str(row.get('Gender','')).lower())
+                        comment = generate_comment(
+                            subject=str(row.get('Subject','English')),
+                            year=int(row.get('Year',5)),
+                            name=str(row.get('Student Name','')),
+                            gender=str(row.get('Gender','')),
+                            att=int(row.get('Attitude',75)),
+                            achieve=int(row.get('Achievement',75)),
+                            target=int(row.get('Target',75)),
+                            pronouns=pronouns
+                        )
+                        st.session_state.all_comments.append({
+                            'name': sanitize_input(str(row.get('Student Name',''))),
+                            'subject': str(row.get('Subject','English')),
+                            'year': int(row.get('Year',5)),
+                            'comment': comment,
+                            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M")
+                        })
+                    except Exception as e:
+                        st.error(f"Error processing row {idx+1}: {e}")
+                progress_bar.empty()
+                status_text.empty()
+                st.session_state.progress = 2
+                st.success(f"Generated {len(df)} comments!")
+                st.session
