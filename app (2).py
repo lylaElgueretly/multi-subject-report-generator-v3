@@ -32,27 +32,65 @@ st.set_page_config(
 
 # ========== FORCE LIGHT THEME ==========
 st.markdown("""
-<script>
-    var stApp = window.parent.document.querySelector('.stApp');
-    if (stApp) {
-        stApp.classList.remove('dark-theme');
-        stApp.classList.add('light-theme');
-    }
-</script>
 <style>
-    /* Force light mode */
+    /* Force light mode for entire app */
     .stApp {
         background-color: white !important;
     }
+    
+    /* Sidebar */
     [data-testid="stSidebar"] {
         background-color: #f0f2f6 !important;
     }
-    .stApp, .stApp * {
-        color: #262730 !important;
+    
+    /* Header area */
+    header[data-testid="stHeader"] {
+        background-color: white !important;
     }
-    input, select, textarea {
+    
+    /* All selectboxes/dropdowns */
+    [data-baseweb="select"] {
+        background-color: white !important;
+    }
+    
+    [data-baseweb="select"] > div {
         background-color: white !important;
         color: #262730 !important;
+    }
+    
+    /* Text inputs */
+    [data-baseweb="input"] {
+        background-color: white !important;
+    }
+    
+    [data-baseweb="input"] > div {
+        background-color: white !important;
+        color: #262730 !important;
+    }
+    
+    /* Text areas */
+    [data-baseweb="textarea"] {
+        background-color: white !important;
+    }
+    
+    [data-baseweb="textarea"] > div {
+        background-color: white !important;
+        color: #262730 !important;
+    }
+    
+    /* Form containers */
+    [data-testid="stForm"] {
+        background-color: white !important;
+    }
+    
+    /* All text */
+    p, span, label, div {
+        color: #262730 !important;
+    }
+    
+    /* Buttons keep their normal styling */
+    button {
+        color: white !important;
     }
 </style>
 """, unsafe_allow_html=True)
