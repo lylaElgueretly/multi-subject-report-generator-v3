@@ -2,6 +2,7 @@
 # Year 7 Maths statement banks
 # Tailored for 11–12-year-olds according to UK National Curriculum
 # Distinct voice specific to Year 7 Maths
+# FIXED STRUCTURE to match app requirements
 
 opening_phrases = [
     "In Year 7 Maths, students have explored",
@@ -24,6 +25,7 @@ attitude_bank = {
     0:  "required significant support to participate in mathematical learning"
 }
 
+# This is the ACHIEVEMENT bank - using number_and_algebra_bank
 number_and_algebra_bank = {
     90: "confidently solved complex problems involving fractions, percentages, ratios, and simple algebra, explaining reasoning clearly",
     85: "applied number and algebraic skills accurately to solve unfamiliar problems",
@@ -37,6 +39,7 @@ number_and_algebra_bank = {
     0: "was unable to apply number or algebra skills without significant help"
 }
 
+# Additional bank for variety (optional use)
 geometry_and_measurement_bank = {
     90: "reasoned confidently about properties of shapes, angles, and measurements, using methods accurately",
     85: "applied geometric and measurement skills to a variety of tasks effectively",
@@ -50,6 +53,7 @@ geometry_and_measurement_bank = {
     0: "needed significant support to work with geometric or measurement concepts"
 }
 
+# Additional bank for variety (optional use)
 problem_solving_and_reasoning_bank = {
     90: "tackled multi-step problems with strategic thinking and explained reasoning clearly",
     85: "solved problems systematically and justified solutions effectively",
@@ -81,4 +85,3 @@ closer_bank = [
     "With ongoing support, learners are expected to develop stronger problem-solving and reasoning skills next term",
     "Pupils demonstrated increasing confidence in approaching mathematical challenges throughout the term"
 ]
-# Write your code here :-)
