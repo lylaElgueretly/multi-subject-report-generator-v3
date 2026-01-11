@@ -199,22 +199,6 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
     # Choose the correct banks
     if subject == "English":
         if year == 7:
-            # ========== DEBUG CODE START ==========
-            st.write("🔍 **DEBUG INFO for Year 7 English:**")
-            st.write(f"Student: {name}")
-            st.write(f"Target band selected: {target}")
-            
-            # Get the raw text from your statement file
-            raw_target_text = target_7_eng[target]
-            st.write(f"Raw text from statement file: '{raw_target_text}'")
-            
-            # Check for "tshe" typo
-            if "tshe" in raw_target_text:
-                st.error("❌ PROBLEM FOUND: 'tshe' is in the statement file!")
-            else:
-                st.success("✅ Good: No 'tshe' in statement file")
-            # ========== DEBUG CODE END ==========
-            
             opening = random.choice(opening_7_eng)
             # FIXED: CORRECT pronoun handling for attitude
             attitude_text = fix_pronouns_in_text(attitude_7_eng[att], p, p_poss)
@@ -340,22 +324,26 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             closer_sentence = random.choice(closer_8_sci)
             writing_sentence = ""  # Not used for science
 
-    # optional attitude target
-    if attitude_target:
+    # ========== CRITICAL CHANGE: ATTITUDE TARGET IS NOW OPTIONAL AND AT END ==========
+    # optional attitude target - now appears at the end of the comment
+    if attitude_target and attitude_target.strip():
         attitude_target = sanitize_input(attitude_target)
-        attitude_target_sentence = f" {lowercase_first(attitude_target)}"
+        # Add as a separate sentence at the end
+        attitude_target_sentence = f" {p.capitalize()} should also {lowercase_first(attitude_target)}"
         if not attitude_target_sentence.endswith('.'):
             attitude_target_sentence += '.'
     else:
         attitude_target_sentence = ""
 
+    # ========== NEW COMMENT ORDER: attitude, achieved, target, optional attitude target ==========
     comment_parts = [
-        attitude_sentence + attitude_target_sentence,
+        attitude_sentence,
         reading_sentence,
-        writing_sentence,
+        writing_sentence if subject == "English" else "",  # Only for English
         reading_target_sentence,
-        writing_target_sentence,
-        closer_sentence
+        writing_target_sentence if subject == "English" else "",  # Only for English
+        closer_sentence,
+        attitude_target_sentence  # ← NOW AT THE END as requested
     ]
 
     comment = " ".join([c for c in comment_parts if c])  # remove empty strings
@@ -403,7 +391,7 @@ with st.sidebar:
         st.rerun()
     
     st.markdown("---")
-    st.caption("v2.5 • Teacher-Focused Edition")
+    st.caption("v2.6 • Optimized Teacher Workflow")
 
 # Main content area with logo
 col1, col2 = st.columns([1, 4])
@@ -473,6 +461,8 @@ if app_mode == "Single Student":
     # Store submitted state for auto-scroll
     if 'form_submitted' not in st.session_state:
         st.session_state.form_submitted = False
+    if 'last_attitude_target' not in st.session_state:
+        st.session_state.last_attitude_target = ""
     
     # Use clear_on_submit to reset most fields
     with st.form("single_student_form", clear_on_submit=True):
@@ -502,10 +492,12 @@ if app_mode == "Single Student":
             
             st.caption("💡 Use dropdowns for faster input. Tab key moves between fields.")
         
-        attitude_target = st.text_area("Optional Attitude Next Steps",
-                                     placeholder="E.g., continue to participate actively in class discussions...",
+        # ========== OPTIONAL ATTITUDE TARGET FIELD ==========
+        attitude_target = st.text_area("Optional Attitude Target",
+                                     placeholder="Leave blank if not needed. E.g., continue participating actively...",
                                      height=60,
-                                     key='attitude_target_input')
+                                     key='attitude_target_input',
+                                     help="This will appear at the END of the comment if provided")
         
         col_submit = st.columns([3, 1])
         with col_submit[1]:
@@ -519,13 +511,15 @@ if app_mode == "Single Student":
         pronouns = get_pronouns(gender)
         
         with st.spinner("Generating comment..."):
+            # Get the optional attitude target
+            optional_attitude_target = st.session_state.get('attitude_target_input', '')
             comment = generate_comment(subject, year, name, gender, att, achieve, 
-                                     target, pronouns, 
-                                     st.session_state.get('attitude_target_input', ''))
+                                     target, pronouns, optional_attitude_target)
             char_count = len(comment)
         
         st.session_state.progress = 2
         st.session_state.form_submitted = True  # Mark that we need to scroll
+        st.session_state.last_attitude_target = optional_attitude_target
         
         # Display comment with stats
         st.subheader("📝 Generated Comment")
@@ -591,13 +585,14 @@ elif app_mode == "Batch Upload":
     - Subject: English/Science
     - Year: 7 or 8
     - Bands: 90,85,80,75,70,65,60,55,40
+    - Optional: Add "AttitudeTarget" column for optional attitude targets
     """)
     
     # Add example CSV download
-    example_csv = """Student Name,Gender,Subject,Year,Attitude,Achievement,Target
-Aseel,Female,English,7,75,80,85
-Mohamed,Male,Science,8,80,75,80
-Sarah,Female,English,7,85,90,85"""
+    example_csv = """Student Name,Gender,Subject,Year,Attitude,Achievement,Target,AttitudeTarget
+Aseel,Female,English,7,75,80,85,continue participating actively in class discussions
+Mohamed,Male,Science,8,80,75,80,
+Sarah,Female,English,7,85,90,85,work on listening carefully to instructions"""
     
     st.download_button(
         label="📥 Download Example CSV",
@@ -642,6 +637,9 @@ Sarah,Female,English,7,85,90,85"""
                     
                     try:
                         pronouns = get_pronouns(str(row.get('Gender', '')).lower())
+                        # Get optional attitude target if column exists
+                        attitude_target = str(row.get('AttitudeTarget', '')) if 'AttitudeTarget' in df.columns else ""
+                        
                         comment = generate_comment(
                             subject=str(row.get('Subject', 'English')),
                             year=int(row.get('Year', 7)),
@@ -650,7 +648,8 @@ Sarah,Female,English,7,85,90,85"""
                             att=int(row.get('Attitude', 75)),
                             achieve=int(row.get('Achievement', 75)),
                             target=int(row.get('Target', 75)),
-                            pronouns=pronouns
+                            pronouns=pronouns,
+                            attitude_target=attitude_target
                         )
                         
                         student_entry = {
@@ -802,7 +801,7 @@ if 'all_comments' in st.session_state and st.session_state.all_comments:
 st.markdown("---")
 footer_cols = st.columns([2, 1])
 with footer_cols[0]:
-    st.caption("© Report Generator v2.5 • Teacher-Focused Edition")
+    st.caption("© Report Generator v2.6 • Optimized Teacher Workflow")
 with footer_cols[1]:
     if st.button("ℹ️ Quick Help", use_container_width=True):
         st.info("""
@@ -810,6 +809,15 @@ with footer_cols[1]:
         1. **Select**: Choose student details
         2. **Generate**: Create comments
         3. **Download**: Export reports
+        
+        **Comment Structure:**
+        - Attitude statement
+        - Reading achievement
+        - Writing achievement (English only)
+        - Reading targets
+        - Writing targets (English only)
+        - Closing statement
+        - **Optional attitude target** (added at end if provided)
         
         **Hotkeys:**
         - Tab: Move between fields
