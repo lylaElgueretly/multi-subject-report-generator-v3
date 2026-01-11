@@ -32,91 +32,6 @@ if 'app_initialized' not in st.session_state:
     st.session_state.last_upload_time = datetime.now()
     st.session_state.generated_files = []
 
-# ========== IMPORT STATEMENTS ==========
-try:
-    # Year 5
-    from statements_year5_English import (
-        opening_phrases as eng_opening_phrases,
-        attitude_bank as eng_attitude_bank,
-        reading_bank as eng_reading_bank,
-        writing_bank as eng_writing_bank,
-        reading_target_bank as eng_reading_target_bank,
-        writing_target_bank as eng_writing_target_bank,
-        closer_bank as eng_closer_bank
-    )
-    from statements_year5_Maths import (
-        opening_phrases as maths_opening_phrases,
-        attitude_bank as maths_attitude_bank,
-        achievement_bank as maths_achievement_bank,
-        target_bank as maths_target_bank,
-        closer_bank as maths_closer_bank
-    )
-    from statements_year5_Science import (
-        opening_phrases as sci_opening_phrases,
-        attitude_bank as sci_attitude_bank,
-        science_bank as sci_science_bank,
-        target_bank as sci_target_bank,
-        closer_bank as sci_closer_bank
-    )
-
-    # Years 7 & 8 English
-    from statements_year7_English import (
-        opening_phrases as opening_7_eng,
-        attitude_bank as attitude_7_eng,
-        reading_bank as reading_7_eng,
-        writing_bank as writing_7_eng,
-        reading_target_bank as target_7_eng,
-        writing_target_bank as target_write_7_eng,
-        closer_bank as closer_7_eng
-    )
-    from statements_year8_English import (
-        opening_phrases as opening_8_eng,
-        attitude_bank as attitude_8_eng,
-        reading_bank as reading_8_eng,
-        writing_bank as writing_8_eng,
-        reading_target_bank as target_8_eng,
-        writing_target_bank as target_write_8_eng,
-        closer_bank as closer_8_eng
-    )
-    
-    # Years 7 & 8 Maths
-    from statements_year7_Maths import (
-        opening_phrases as opening_7_maths,
-        attitude_bank as attitude_7_maths,
-        number_and_algebra_bank as number_algebra_7_maths,
-        geometry_and_measurement_bank as geometry_measurement_7_maths,
-        problem_solving_and_reasoning_bank as problem_solving_7_maths,
-        target_bank as target_7_maths,
-        closer_bank as closer_7_maths
-    )
-    from statements_year8_Maths import (
-        opening_phrases as opening_8_maths,
-        attitude_bank as attitude_8_maths,
-        maths_bank as maths_8_maths,
-        target_bank as target_8_maths,
-        closer_bank as closer_8_maths
-    )
-    
-    # Years 7 & 8 Science
-    from statements_year7_Science import (
-        opening_phrases as opening_7_sci,
-        attitude_bank as attitude_7_sci,
-        science_bank as science_7_sci,
-        target_bank as target_7_sci,
-        closer_bank as closer_7_sci
-    )
-    from statements_year8_Science import (
-        opening_phrases as opening_8_sci,
-        attitude_bank as attitude_8_sci,
-        science_bank as science_8_sci,
-        target_bank as target_8_sci,
-        closer_bank as closer_8_sci
-    )
-
-except ImportError as e:
-    st.error(f"Missing required statement files: {e}")
-    st.stop()
-
 # ========== SECURITY FUNCTIONS ==========
 def validate_upload_rate():
     time_since_last = datetime.now() - st.session_state.last_upload_time
@@ -184,100 +99,209 @@ def fix_pronouns_in_text(text, pronoun, possessive):
     text = re.sub(r'\bHim\b', pronoun.capitalize(), text)
     text = re.sub(r'\bhimself\b', f"{pronoun}self", text, flags=re.IGNORECASE)
     text = re.sub(r'\bherself\b', f"{pronoun}self", text, flags=re.IGNORECASE)
+    text = re.sub(r'\bher\b', possessive, text, flags=re.IGNORECASE)
+    text = re.sub(r'\bHer\b', possessive.capitalize(), text)
+    text = re.sub(r'\bshe\b', pronoun, text, flags=re.IGNORECASE)
+    text = re.sub(r'\bShe\b', pronoun.capitalize(), text)
     return text
+
+# ========== IMPORT STATEMENT FILES ==========
+try:
+    # Year 5
+    from statements_year5_English import (
+        opening_phrases as eng5_opening,
+        attitude_bank as eng5_attitude,
+        reading_bank as eng5_reading,
+        writing_bank as eng5_writing,
+        reading_target_bank as eng5_reading_target,
+        writing_target_bank as eng5_writing_target,
+        closer_bank as eng5_closer
+    )
+    
+    from statements_year5_Maths import (
+        opening_phrases as math5_opening,
+        attitude_bank as math5_attitude,
+        number_bank as math5_number,
+        problem_solving_bank as math5_problem,
+        target_bank as math5_target,
+        closer_bank as math5_closer
+    )
+    
+    from statements_year5_Science import (
+        opening_phrases as sci5_opening,
+        attitude_bank as sci5_attitude,
+        science_bank as sci5_science,
+        target_bank as sci5_target,
+        closer_bank as sci5_closer
+    )
+    
+    # Year 7
+    from statements_year7_English import (
+        opening_phrases as eng7_opening,
+        attitude_bank as eng7_attitude,
+        reading_bank as eng7_reading,
+        writing_bank as eng7_writing,
+        reading_target_bank as eng7_reading_target,
+        writing_target_bank as eng7_writing_target,
+        closer_bank as eng7_closer
+    )
+    
+    from statements_year7_Maths import (
+        opening_phrases as math7_opening,
+        attitude_bank as math7_attitude,
+        number_and_algebra_bank as math7_number,
+        problem_solving_and_reasoning_bank as math7_problem,
+        target_bank as math7_target,
+        closer_bank as math7_closer
+    )
+    
+    from statements_year7_Science import (
+        opening_phrases as sci7_opening,
+        attitude_bank as sci7_attitude,
+        science_bank as sci7_science,
+        target_bank as sci7_target,
+        closer_bank as sci7_closer
+    )
+    
+    # Year 8
+    from statements_year8_English import (
+        opening_phrases as eng8_opening,
+        attitude_bank as eng8_attitude,
+        reading_bank as eng8_reading,
+        writing_bank as eng8_writing,
+        reading_target_bank as eng8_reading_target,
+        writing_target_bank as eng8_writing_target,
+        closer_bank as eng8_closer
+    )
+    
+    from statements_year8_Maths import (
+        opening_phrases as math8_opening,
+        attitude_bank as math8_attitude,
+        maths_bank as math8_maths,
+        target_bank as math8_target,
+        closer_bank as math8_closer
+    )
+    
+    from statements_year8_Science import (
+        opening_phrases as sci8_opening,
+        attitude_bank as sci8_attitude,
+        science_bank as sci8_science,
+        target_bank as sci8_target,
+        closer_bank as sci8_closer
+    )
+    
+except ImportError as e:
+    st.error(f"Error importing statement files: {e}")
+    st.error("Please ensure all statement files are in the same directory as app.py")
+    st.stop()
 
 # ========== COMMENT GENERATOR ==========
 def generate_comment(subject, year, name, gender, att, achieve, target, pronouns, attitude_target=""):
     p, p_poss = pronouns
     name = sanitize_input(name)
+    
+    # Find the closest valid score in the dictionary keys
+    def find_closest_score(score, bank):
+        keys = list(bank.keys())
+        # Find the closest key
+        closest = min(keys, key=lambda x: abs(x - score))
+        return closest
+    
+    att = find_closest_score(att, eng5_attitude)  # Use any attitude bank as reference
+    achieve = find_closest_score(achieve, eng5_reading)  # Use any reading bank as reference
+    target_score = find_closest_score(target, eng5_reading_target)  # Use any target bank as reference
 
-    # --- Select statement banks ---
+    # --- Select statement banks based on year and subject ---
     if year == 5:
         if subject == "English":
-            opening = random.choice(eng_opening_phrases)
-            attitude_text = fix_pronouns_in_text(eng_attitude_bank[att], p, p_poss)
-            reading_text = fix_pronouns_in_text(eng_reading_bank[achieve], p, p_poss)
-            writing_text = fix_pronouns_in_text(eng_writing_bank[achieve], p, p_poss)
-            reading_target_text = fix_pronouns_in_text(eng_reading_target_bank[target], p, p_poss)
-            writing_target_text = fix_pronouns_in_text(eng_writing_target_bank[target], p, p_poss)
-            closer_sentence = random.choice(eng_closer_bank)
-
+            opening = random.choice(eng5_opening)
+            attitude_text = fix_pronouns_in_text(eng5_attitude[att], p, p_poss)
+            reading_text = fix_pronouns_in_text(eng5_reading[achieve], p, p_poss)
+            writing_text = fix_pronouns_in_text(eng5_writing[achieve], p, p_poss)
+            reading_target_text = fix_pronouns_in_text(eng5_reading_target[target_score], p, p_poss)
+            writing_target_text = fix_pronouns_in_text(eng5_writing_target[target_score], p, p_poss)
+            closer_sentence = random.choice(eng5_closer)
+            
         elif subject == "Maths":
-            opening = random.choice(maths_opening_phrases)
-            attitude_text = fix_pronouns_in_text(maths_attitude_bank[att], p, p_poss)
-            reading_text = fix_pronouns_in_text(maths_achievement_bank[achieve], p, p_poss)
-            writing_text = ""  # not used
-            reading_target_text = fix_pronouns_in_text(maths_target_bank[target], p, p_poss)
-            writing_target_text = ""
-            closer_sentence = random.choice(maths_closer_bank)
-
-        else:  # Science
-            opening = random.choice(sci_opening_phrases)
-            attitude_text = fix_pronouns_in_text(sci_attitude_bank[att], p, p_poss)
-            reading_text = fix_pronouns_in_text(sci_science_bank[achieve], p, p_poss)
+            opening = random.choice(math5_opening)
+            attitude_text = fix_pronouns_in_text(math5_attitude[att], p, p_poss)
+            # Combine number and problem solving for Year 5 Maths
+            number_text = fix_pronouns_in_text(math5_number.get(achieve, ""), p, p_poss)
+            problem_text = fix_pronouns_in_text(math5_problem.get(achieve, ""), p, p_poss)
+            reading_text = f"{number_text}. {problem_text}" if problem_text else number_text
             writing_text = ""
-            reading_target_text = fix_pronouns_in_text(sci_target_bank[target], p, p_poss)
+            reading_target_text = fix_pronouns_in_text(math5_target[target_score], p, p_poss)
             writing_target_text = ""
-            closer_sentence = random.choice(sci_closer_bank)
-
-    else:
-        # Years 7 & 8
-        if subject == "English":
-            if year == 7:
-                opening = random.choice(opening_7_eng)
-                attitude_text = fix_pronouns_in_text(attitude_7_eng[att], p, p_poss)
-                reading_text = fix_pronouns_in_text(reading_7_eng[achieve], p, p_poss)
-                writing_text = fix_pronouns_in_text(writing_7_eng[achieve], p, p_poss)
-                reading_target_text = fix_pronouns_in_text(target_7_eng[target], p, p_poss)
-                writing_target_text = fix_pronouns_in_text(target_write_7_eng[target], p, p_poss)
-                closer_sentence = random.choice(closer_7_eng)
-            else:
-                opening = random.choice(opening_8_eng)
-                attitude_text = fix_pronouns_in_text(attitude_8_eng[att], p, p_poss)
-                reading_text = fix_pronouns_in_text(reading_8_eng[achieve], p, p_poss)
-                writing_text = fix_pronouns_in_text(writing_8_eng[achieve], p, p_poss)
-                reading_target_text = fix_pronouns_in_text(target_8_eng[target], p, p_poss)
-                writing_target_text = fix_pronouns_in_text(target_write_8_eng[target], p, p_poss)
-                closer_sentence = random.choice(closer_8_eng)
-        
-        elif subject == "Maths":
-            if year == 7:
-                opening = random.choice(opening_7_maths)
-                attitude_text = fix_pronouns_in_text(attitude_7_maths[att], p, p_poss)
-                # For Year 7 Maths, combine different skill areas
-                number_algebra_text = fix_pronouns_in_text(number_algebra_7_maths.get(achieve, ""), p, p_poss)
-                problem_solving_text = fix_pronouns_in_text(problem_solving_7_maths.get(achieve, ""), p, p_poss)
-                reading_text = f"{number_algebra_text}. {problem_solving_text}" if problem_solving_text else number_algebra_text
-                writing_text = ""
-                reading_target_text = fix_pronouns_in_text(target_7_maths[target], p, p_poss)
-                writing_target_text = ""
-                closer_sentence = random.choice(closer_7_maths)
-            else:
-                opening = random.choice(opening_8_maths)
-                attitude_text = fix_pronouns_in_text(attitude_8_maths[att].replace("{name}", name), p, p_poss)
-                reading_text = fix_pronouns_in_text(maths_8_maths[achieve].replace("{name}", name), p, p_poss)
-                writing_text = ""
-                reading_target_text = fix_pronouns_in_text(target_8_maths[target].replace("{name}", name), p, p_poss)
-                writing_target_text = ""
-                closer_sentence = random.choice([c.replace("{name}", name) for c in closer_8_maths])
-        
+            closer_sentence = random.choice(math5_closer)
+            
         else:  # Science
-            if year == 7:
-                opening = random.choice(opening_7_sci)
-                attitude_text = fix_pronouns_in_text(attitude_7_sci[att], p, p_poss)
-                reading_text = fix_pronouns_in_text(science_7_sci[achieve], p, p_poss)
-                writing_text = ""
-                reading_target_text = fix_pronouns_in_text(target_7_sci[target], p, p_poss)
-                writing_target_text = ""
-                closer_sentence = random.choice(closer_7_sci)
-            else:
-                opening = random.choice(opening_8_sci)
-                attitude_text = fix_pronouns_in_text(attitude_8_sci[att], p, p_poss)
-                reading_text = fix_pronouns_in_text(science_8_sci[achieve], p, p_poss)
-                writing_text = ""
-                reading_target_text = fix_pronouns_in_text(target_8_sci[target], p, p_poss)
-                writing_target_text = ""
-                closer_sentence = random.choice(closer_8_sci)
+            opening = random.choice(sci5_opening)
+            attitude_text = fix_pronouns_in_text(sci5_attitude[att], p, p_poss)
+            reading_text = fix_pronouns_in_text(sci5_science[achieve], p, p_poss)
+            writing_text = ""
+            reading_target_text = fix_pronouns_in_text(sci5_target[target_score], p, p_poss)
+            writing_target_text = ""
+            closer_sentence = random.choice(sci5_closer)
+            
+    elif year == 7:
+        if subject == "English":
+            opening = random.choice(eng7_opening)
+            attitude_text = fix_pronouns_in_text(eng7_attitude[att], p, p_poss)
+            reading_text = fix_pronouns_in_text(eng7_reading[achieve], p, p_poss)
+            writing_text = fix_pronouns_in_text(eng7_writing[achieve], p, p_poss)
+            reading_target_text = fix_pronouns_in_text(eng7_reading_target[target_score], p, p_poss)
+            writing_target_text = fix_pronouns_in_text(eng7_writing_target[target_score], p, p_poss)
+            closer_sentence = random.choice(eng7_closer)
+            
+        elif subject == "Maths":
+            opening = random.choice(math7_opening)
+            attitude_text = fix_pronouns_in_text(math7_attitude[att], p, p_poss)
+            # Combine different skill areas for Year 7 Maths
+            number_text = fix_pronouns_in_text(math7_number.get(achieve, ""), p, p_poss)
+            problem_text = fix_pronouns_in_text(math7_problem.get(achieve, ""), p, p_poss)
+            reading_text = f"{number_text}. {problem_text}" if problem_text else number_text
+            writing_text = ""
+            reading_target_text = fix_pronouns_in_text(math7_target[target_score], p, p_poss)
+            writing_target_text = ""
+            closer_sentence = random.choice(math7_closer)
+            
+        else:  # Science
+            opening = random.choice(sci7_opening)
+            attitude_text = fix_pronouns_in_text(sci7_attitude[att], p, p_poss)
+            reading_text = fix_pronouns_in_text(sci7_science[achieve], p, p_poss)
+            writing_text = ""
+            reading_target_text = fix_pronouns_in_text(sci7_target[target_score], p, p_poss)
+            writing_target_text = ""
+            closer_sentence = random.choice(sci7_closer)
+            
+    else:  # Year 8
+        if subject == "English":
+            opening = random.choice(eng8_opening)
+            attitude_text = fix_pronouns_in_text(eng8_attitude[att], p, p_poss)
+            reading_text = fix_pronouns_in_text(eng8_reading[achieve], p, p_poss)
+            writing_text = fix_pronouns_in_text(eng8_writing[achieve], p, p_poss)
+            reading_target_text = fix_pronouns_in_text(eng8_reading_target[target_score], p, p_poss)
+            writing_target_text = fix_pronouns_in_text(eng8_writing_target[target_score], p, p_poss)
+            closer_sentence = random.choice(eng8_closer)
+            
+        elif subject == "Maths":
+            opening = random.choice(math8_opening)
+            # Handle {name} placeholders for Year 8 Maths
+            attitude_text = fix_pronouns_in_text(math8_attitude[att].replace("{name}", name), p, p_poss)
+            reading_text = fix_pronouns_in_text(math8_maths[achieve].replace("{name}", name), p, p_poss)
+            writing_text = ""
+            reading_target_text = fix_pronouns_in_text(math8_target[target_score].replace("{name}", name), p, p_poss)
+            writing_target_text = ""
+            closer_sentence = random.choice([c.replace("{name}", name) for c in math8_closer])
+            
+        else:  # Science
+            opening = random.choice(sci8_opening)
+            attitude_text = fix_pronouns_in_text(sci8_attitude[att], p, p_poss)
+            reading_text = fix_pronouns_in_text(sci8_science[achieve], p, p_poss)
+            writing_text = ""
+            reading_target_text = fix_pronouns_in_text(sci8_target[target_score], p, p_poss)
+            writing_target_text = ""
+            closer_sentence = random.choice(sci8_closer)
 
     attitude_target_sentence = f" {attitude_target.strip()}" if attitude_target else ""
 
