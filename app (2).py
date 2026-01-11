@@ -1,21 +1,27 @@
 # =========================================
 # MULTI-SUBJECT REPORT COMMENT GENERATOR - Secure Streamlit Version
 # Supports English, Math, Science, Years 5, 7 & 8
+# Enhanced with security, privacy, and UX features
 # =========================================
 
 import random
 import streamlit as st
 from docx import Document
-import tempfile, os, time, io, re
+import tempfile
+import os
+import time
 from datetime import datetime, timedelta
 import pandas as pd
+import io
+import re
 
-# ========== SETTINGS ==========
+# ========== SECURITY & PRIVACY SETTINGS ==========
 TARGET_CHARS = 499
 MAX_FILE_SIZE_MB = 5
 MAX_ROWS_PER_UPLOAD = 100
 RATE_LIMIT_SECONDS = 10
 
+# ========== PAGE CONFIGURATION ==========
 st.set_page_config(
     page_title="🔒 Secure Report Generator",
     page_icon="📚",
@@ -23,7 +29,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ========== SESSION INIT ==========
+# ========== SECURITY INITIALIZATION ==========
 if 'app_initialized' not in st.session_state:
     st.session_state.clear()
     st.session_state.app_initialized = True
@@ -32,54 +38,31 @@ if 'app_initialized' not in st.session_state:
     st.session_state.generated_files = []
 
 # ========== IMPORT STATEMENTS ==========
-subjects = ["English", "Math", "Science"]
-years = [5, 7, 8]
+try:
+    # English
+    from statements_year5_English import opening_phrases as opening_5_eng, attitude_bank as attitude_5_eng, reading_bank as reading_5_eng, writing_bank as writing_5_eng, reading_target_bank as target_5_eng, writing_target_bank as target_write_5_eng, closer_bank as closer_5_eng
+    from statements_year7_English import opening_phrases as opening_7_eng, attitude_bank as attitude_7_eng, reading_bank as reading_7_eng, writing_bank as writing_7_eng, reading_target_bank as target_7_eng, writing_target_bank as target_write_7_eng, closer_bank as closer_7_eng
+    from statements_year8_English import opening_phrases as opening_8_eng, attitude_bank as attitude_8_eng, reading_bank as reading_8_eng, writing_bank as writing_8_eng, reading_target_bank as target_8_eng, writing_target_bank as target_write_8_eng, closer_bank as closer_8_eng
 
-opening_banks = {}
-attitude_banks = {}
-reading_banks = {}
-writing_banks = {}
-reading_target_banks = {}
-writing_target_banks = {}
-closer_banks = {}
+    # Math
+    from statements_year5_Math import opening_phrases as opening_5_math, attitude_bank as attitude_5_math, reading_bank as reading_5_math, writing_bank as writing_5_math, reading_target_bank as target_5_math, writing_target_bank as target_write_5_math, closer_bank as closer_5_math
+    from statements_year7_Math import opening_phrases as opening_7_math, attitude_bank as attitude_7_math, reading_bank as reading_7_math, writing_bank as writing_7_math, reading_target_bank as target_7_math, writing_target_bank as target_write_7_math, closer_bank as closer_7_math
+    from statements_year8_Math import opening_phrases as opening_8_math, attitude_bank as attitude_8_math, reading_bank as reading_8_math, writing_bank as writing_8_math, reading_target_bank as target_8_math, writing_target_bank as target_write_8_math, closer_bank as closer_8_math
 
-# Dynamically import statement files
-for subj in subjects:
-    opening_banks[subj] = {}
-    attitude_banks[subj] = {}
-    reading_banks[subj] = {}
-    writing_banks[subj] = {}
-    reading_target_banks[subj] = {}
-    writing_target_banks[subj] = {}
-    closer_banks[subj] = {}
-    for yr in years:
-        try:
-            mod = __import__(f"statements_year{yr}_{subj}", fromlist=[
-                'opening_phrases','attitude_bank','reading_bank','writing_bank',
-                'reading_target_bank','writing_target_bank','closer_bank'
-            ])
-            opening_banks[subj][yr] = getattr(mod,'opening_phrases',[])
-            attitude_banks[subj][yr] = getattr(mod,'attitude_bank',{})
-            reading_banks[subj][yr] = getattr(mod,'reading_bank',{})
-            writing_banks[subj][yr] = getattr(mod,'writing_bank',{})
-            reading_target_banks[subj][yr] = getattr(mod,'reading_target_bank',{})
-            writing_target_banks[subj][yr] = getattr(mod,'writing_target_bank',{})
-            closer_banks[subj][yr] = getattr(mod,'closer_bank',[])
-        except ImportError:
-            st.warning(f"Missing statement file: Year {yr} {subj}, some comments may fail.")
-            opening_banks[subj][yr] = []
-            attitude_banks[subj][yr] = {}
-            reading_banks[subj][yr] = {}
-            writing_banks[subj][yr] = {}
-            reading_target_banks[subj][yr] = {}
-            writing_target_banks[subj][yr] = {}
-            closer_banks[subj][yr] = []
+    # Science
+    from statements_year5_Science import opening_phrases as opening_5_sci, attitude_bank as attitude_5_sci, science_bank as science_5_sci, target_bank as target_5_sci, closer_bank as closer_5_sci
+    from statements_year7_Science import opening_phrases as opening_7_sci, attitude_bank as attitude_7_sci, science_bank as science_7_sci, target_bank as target_7_sci, closer_bank as closer_7_sci
+    from statements_year8_Science import opening_phrases as opening_8_sci, attitude_bank as attitude_8_sci, science_bank as science_8_sci, target_bank as target_8_sci, closer_bank as closer_8_sci
+except ImportError as e:
+    st.error(f"Missing required statement files: {e}")
+    st.stop()
 
 # ========== SECURITY FUNCTIONS ==========
 def validate_upload_rate():
-    delta = datetime.now() - st.session_state.last_upload_time
-    if delta < timedelta(seconds=RATE_LIMIT_SECONDS):
-        st.error(f"Please wait {RATE_LIMIT_SECONDS - delta.seconds} seconds before uploading again")
+    time_since_last = datetime.now() - st.session_state.last_upload_time
+    if time_since_last < timedelta(seconds=RATE_LIMIT_SECONDS):
+        wait_time = RATE_LIMIT_SECONDS - time_since_last.seconds
+        st.error(f"Please wait {wait_time} seconds before uploading again")
         return False
     return True
 
@@ -101,7 +84,7 @@ def process_csv_securely(uploaded_file):
         tmp.write(uploaded_file.getvalue())
         temp_path = tmp.name
     try:
-        df = pd.read_csv(temp_path, nrows=MAX_ROWS_PER_UPLOAD+1)
+        df = pd.read_csv(temp_path, nrows=MAX_ROWS_PER_UPLOAD + 1)
         if len(df) > MAX_ROWS_PER_UPLOAD:
             st.warning(f"Only processing first {MAX_ROWS_PER_UPLOAD} rows")
             df = df.head(MAX_ROWS_PER_UPLOAD)
@@ -115,10 +98,11 @@ def process_csv_securely(uploaded_file):
         try: os.unlink(temp_path)
         except: pass
 
+# ========== HELPER FUNCTIONS ==========
 def get_pronouns(gender):
-    g = gender.lower()
-    if g == "male": return "he","his"
-    if g == "female": return "she","her"
+    gender = gender.lower()
+    if gender == "male": return "he","his"
+    if gender == "female": return "she","her"
     return "they","their"
 
 def lowercase_first(text):
@@ -126,7 +110,7 @@ def lowercase_first(text):
 
 def truncate_comment(comment, target=TARGET_CHARS):
     if len(comment) <= target: return comment
-    truncated = comment[:target].rstrip(" ,;.")
+    truncated = comment[:target].rstrip(" ,;.") 
     if "." in truncated: truncated = truncated[:truncated.rfind(".")+1]
     return truncated
 
@@ -142,66 +126,74 @@ def fix_pronouns_in_text(text, pronoun, possessive):
     text = re.sub(r'\bherself\b', f"{pronoun}self", text, flags=re.IGNORECASE)
     return text
 
-# ========== COMMENT GENERATION ==========
+# ========== COMMENT GENERATOR ==========
 def generate_comment(subject, year, name, gender, att, achieve, target, pronouns, attitude_target=None):
     p, p_poss = pronouns
     name = sanitize_input(name)
 
-    opening = random.choice(opening_banks[subject][year]) if opening_banks[subject][year] else ""
-    attitude_text = fix_pronouns_in_text(attitude_banks[subject][year].get(att,""), p, p_poss)
-    attitude_sentence = f"{opening} {name} {attitude_text}".strip()
+    # Select banks
+    if subject=="English":
+        if year==5: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_5_eng, attitude_5_eng, reading_5_eng, writing_5_eng, target_5_eng, target_write_5_eng, closer_5_eng
+        elif year==7: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_7_eng, attitude_7_eng, reading_7_eng, writing_7_eng, target_7_eng, target_write_7_eng, closer_7_eng
+        elif year==8: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_8_eng, attitude_8_eng, reading_8_eng, writing_8_eng, target_8_eng, target_write_8_eng, closer_8_eng
+    elif subject=="Math":
+        if year==5: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_5_math, attitude_5_math, reading_5_math, writing_5_math, target_5_math, target_write_5_math, closer_5_math
+        elif year==7: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_7_math, attitude_7_math, reading_7_math, writing_7_math, target_7_math, target_write_7_math, closer_7_math
+        elif year==8: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_8_math, attitude_8_math, reading_8_math, writing_8_math, target_8_math, target_write_8_math, closer_8_math
+    elif subject=="Science":
+        if year==5: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_5_sci, attitude_5_sci, science_5_sci, None, target_5_sci, None, closer_5_sci
+        elif year==7: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_7_sci, attitude_7_sci, science_7_sci, None, target_7_sci, None, closer_7_sci
+        elif year==8: opening, attitude, reading, writing, reading_target, writing_target, closer = opening_8_sci, attitude_8_sci, science_8_sci, None, target_8_sci, None, closer_8_sci
+
+    # Compose comment
+    opening_phrase = random.choice(opening) if opening else ""
+    closer_phrase = random.choice(closer) if closer else ""
+    attitude_text = fix_pronouns_in_text(attitude.get(att,""), p, p_poss)
+    attitude_sentence = f"{opening_phrase} {name} {attitude_text}".strip()
     if attitude_sentence and not attitude_sentence.endswith('.'): attitude_sentence += '.'
 
-    reading_text = fix_pronouns_in_text(reading_banks[subject][year].get(achieve,""), p, p_poss)
+    reading_text = fix_pronouns_in_text(reading.get(achieve,""), p, p_poss)
     if reading_text and reading_text[0].islower(): reading_text = f"{p} {reading_text}"
     reading_sentence = f"In reading, {reading_text}" if subject=="English" else reading_text
     if reading_sentence and not reading_sentence.endswith('.'): reading_sentence += '.'
 
-    writing_text = fix_pronouns_in_text(writing_banks[subject][year].get(achieve,""), p, p_poss)
-    if writing_text and writing_text[0].islower(): writing_text = f"{p} {writing_text}"
-    writing_sentence = f"In writing, {writing_text}" if subject=="English" else ""
+    if writing:
+        writing_text = fix_pronouns_in_text(writing.get(achieve,""), p, p_poss)
+        if writing_text and writing_text[0].islower(): writing_text = f"{p} {writing_text}"
+        writing_sentence = f"In writing, {writing_text}"
+        if writing_sentence and not writing_sentence.endswith('.'): writing_sentence += '.'
+    else: writing_sentence = ""
 
-    reading_target_text = fix_pronouns_in_text(reading_target_banks[subject][year].get(target,""), p, p_poss)
-    reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}" if subject=="English" else f"For the next term, {p} should {lowercase_first(reading_target_text)}"
+    reading_target_text = fix_pronouns_in_text(reading_target.get(target,""), p, p_poss)
+    reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}" if reading_target_text else ""
     if reading_target_sentence and not reading_target_sentence.endswith('.'): reading_target_sentence += '.'
 
-    writing_target_text = fix_pronouns_in_text(writing_target_banks[subject][year].get(target,""), p, p_poss)
-    writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}" if subject=="English" else ""
+    writing_target_text = fix_pronouns_in_text(writing_target.get(target,""), p, p_poss) if writing_target else ""
+    writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}" if writing_target_text else ""
+    if writing_target_sentence and not writing_target_sentence.endswith('.'): writing_target_sentence += '.'
 
-    closer_sentence = random.choice(closer_banks[subject][year]) if closer_banks[subject][year] else ""
-
+    attitude_target_sentence = ""
     if attitude_target:
         attitude_target_sentence = f" {lowercase_first(sanitize_input(attitude_target))}"
         if not attitude_target_sentence.endswith('.'): attitude_target_sentence += '.'
-    else:
-        attitude_target_sentence = ""
 
-    comment_parts = [attitude_sentence + attitude_target_sentence,
-                     reading_sentence,
-                     writing_sentence,
-                     reading_target_sentence,
-                     writing_target_sentence,
-                     closer_sentence]
+    comment_parts = [
+        attitude_sentence + attitude_target_sentence,
+        reading_sentence,
+        writing_sentence,
+        reading_target_sentence,
+        writing_target_sentence,
+        closer_phrase
+    ]
 
     comment = " ".join([c for c in comment_parts if c])
     if not comment.endswith('.'): comment += '.'
     comment = truncate_comment(comment, TARGET_CHARS)
     if not comment.endswith('.'): comment = comment.rstrip(' ,;') + '.'
-
     return comment
 
-# =========================================
-# --- Streamlit UI remains largely unchanged ---
-# Update dropdowns for Subjects and Years
-
-# In Single Student mode:
-# subject = st.selectbox("Subject", subjects)
-# year = st.selectbox("Year", years)
-
-# In CSV validation info:
-# Subject: English/Math/Science
-# Year: 5,7,8
-
-# The rest of the app (Batch Upload, Download, Privacy, Footer) remains unchanged
-# All calls to generate_comment() now work for any subject/year combination
-
+# ========== THE REST OF THE APP UI ==========
+# Your original Streamlit layout, forms, CSV handling, download section,
+# privacy info, and footer remain unchanged. They will now call
+# this updated generate_comment() function, and it fully supports
+# English, Math, Science for Years 5, 7, 8.
