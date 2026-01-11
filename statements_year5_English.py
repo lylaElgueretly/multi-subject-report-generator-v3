@@ -1,84 +1,93 @@
 # =========================================
-# Year 5 English Statements
-# UK National Curriculum style
-# Compatible with Multi-Subject Report Generator
+# statements_year5_English.py
+# English statements for Year 5 (Upper KS2 – UK National Curriculum)
+# Focus: developing comprehension, creative expression, structured writing
+# Distinct KS2 voice – building towards KS3
+# FIXED STRUCTURE to match app requirements
 # =========================================
 
-# Opening phrases
+# ---------- Opening phrases ----------
 opening_phrases = [
-    "During Year 5 English lessons, {} consistently",
-    "Over the term, {} has",
-    "{} has demonstrated steady effort and focus in"
+    "This term,",
+    "Over the course of this term,",
+    "During this term,",
+    "Throughout this term,",
+    "Across the term,",
 ]
 
-# Attitude bands
+# ---------- Attitude & Learning Behaviours ----------
 attitude_bank = {
-    90: "shown outstanding enthusiasm and participation in class activities",
-    85: "been very motivated and engaged with lessons",
-    80: "participated well and shown interest in learning",
-    75: "shown satisfactory effort in lessons",
-    70: "been willing to try tasks with some support",
-    65: "needed occasional encouragement to engage fully",
-    60: "required guidance to maintain focus",
-    55: "found it challenging to participate consistently",
-    40: "needed significant support to take part in activities"
+    90: "approached learning with enthusiasm and independence, showing curiosity and confidence",
+    85: "demonstrated a highly positive and motivated attitude towards learning",
+    80: "showed a positive attitude and participated confidently in class activities",
+    75: "showed consistent effort and engaged well in lessons",
+    70: "was generally focused and responded well to guidance",
+    65: "showed a steady approach to learning but benefited from encouragement",
+    60: "required support to remain focused and engaged in lessons",
+    55: "needed regular guidance to remain engaged and confident",
+    40: "found it challenging to stay focused and required consistent encouragement",
+    0:  "required significant support to engage confidently in learning"
 }
 
-# Reading achievement bands
+# ---------- Reading Skills & Understanding ----------
 reading_bank = {
-    90: "can confidently read a range of texts, understanding key ideas and themes",
-    85: "reads most texts fluently and can explain main ideas",
-    80: "reads confidently and identifies key points with some support",
-    75: "understands main ideas in texts when prompted",
-    70: "can follow simple texts and answer basic questions",
-    65: "requires help to understand texts and key details",
-    60: "needs support to read and understand short passages",
-    55: "struggles to recall main points from reading",
-    40: "requires close guidance to make sense of simple texts"
+    90: "read with excellent comprehension, made insightful inferences, and discussed texts confidently",
+    85: "understood texts well and made thoughtful interpretations of meaning",
+    80: "read confidently and identified key themes and ideas in texts",
+    75: "understood main ideas and some details in age-appropriate texts",
+    70: "identified key points in texts with some support",
+    65: "showed understanding of straightforward texts when guided",
+    60: "understood simple texts with support and guidance",
+    55: "grasped basic information in familiar texts",
+    40: "needed support to understand texts",
+    0:  "required significant support to access meaning in texts"
 }
 
-# Writing achievement bands
+# ---------- Writing Skills & Expression ----------
 writing_bank = {
-    90: "writes clear, detailed paragraphs using varied vocabulary and punctuation",
-    85: "produces well-structured sentences with correct punctuation",
-    80: "writes sentences that are mostly clear and structured",
-    75: "can write simple paragraphs with some support",
-    70: "writes basic sentences and ideas with guidance",
-    65: "needs support to organise ideas in writing",
-    60: "struggles to form coherent sentences",
-    55: "requires help to express ideas clearly in writing",
-    40: "needs significant support to write simple sentences"
+    90: "wrote creatively and clearly using varied vocabulary and well-structured sentences",
+    85: "produced well-organized writing with appropriate vocabulary and sentence variety",
+    80: "wrote structured pieces with good use of vocabulary and grammar",
+    75: "wrote organized paragraphs with suitable vocabulary",
+    70: "wrote clear sentences and simple paragraphs",
+    65: "wrote simple sentences with developing organization",
+    60: "wrote basic sentences with support",
+    55: "formed simple written responses with guidance",
+    40: "needed support to express ideas in writing",
+    0:  "required significant support to form sentences in writing"
 }
 
-# Reading targets for next term
+# ---------- Reading Next Steps / Targets ----------
 reading_target_bank = {
-    90: "explore a wider range of texts independently, summarising ideas",
-    85: "develop inference skills and discuss authors’ choices",
-    80: "practice explaining key points and answering questions",
-    75: "focus on understanding main ideas and supporting details",
-    70: "read short texts and practise answering comprehension questions",
-    65: "develop confidence in reading with support",
-    60: "focus on understanding sentences and short passages",
-    55: "practice recalling information from texts with guidance",
-    40: "work on reading and understanding simple sentences daily"
+    90: "explore complex themes and make connections between different texts",
+    85: "develop deeper inference skills and support ideas with textual evidence",
+    80: "focus on identifying implied meanings and discussing author's choices",
+    75: "practice making inferences and explaining character motivations",
+    70: "work on identifying key themes and summarizing main ideas",
+    65: "focus on reading for meaning and noting important details",
+    60: "build vocabulary and re-read to improve understanding",
+    55: "develop comprehension by discussing texts and asking questions",
+    40: "practice reading regularly to build confidence and fluency",
+    0:  "begin with supported reading activities to develop basic skills"
 }
 
-# Writing targets for next term
+# ---------- Writing Next Steps / Targets ----------
 writing_target_bank = {
-    90: "experiment with more complex sentences and rich vocabulary",
-    85: "improve paragraph structure and punctuation accuracy",
-    80: "focus on clear sentences and organising ideas",
-    75: "practice writing complete paragraphs with guidance",
-    70: "work on writing simple sentences independently",
-    65: "focus on forming sentences and organising ideas",
-    60: "practice using basic punctuation and sentence structure",
-    55: "develop confidence in expressing ideas in writing",
-    40: "work on forming complete sentences and basic vocabulary"
+    90: "experiment with varied sentence structures and ambitious vocabulary choices",
+    85: "develop writing by using figurative language and varied openers",
+    80: "focus on using descriptive language and organizing ideas clearly",
+    75: "add more detail and use varied sentence structures",
+    70: "work on writing in paragraphs and using connectives",
+    65: "include adjectives and interesting vocabulary to improve writing",
+    60: "practice planning writing and organizing ideas into sentences",
+    55: "focus on using capital letters, full stops, and basic punctuation correctly",
+    40: "work on forming complete sentences with support",
+    0:  "begin with guided writing activities to build foundational skills"
 }
 
-# Closing statements
+# ---------- Closing Remarks ----------
 closer_bank = [
-    "With continued effort, {} is expected to make steady progress next term.",
-    "{} will benefit from regular practice and support to reach their potential.",
-    "Further encouragement and practice will help {} develop their reading and writing skills."
+    "Overall, progress was evident over the course of the term",
+    "With continued support, further progress is expected next term",
+    "Confidence in English skills improved gradually as the term progressed"
 ]
