@@ -30,6 +30,33 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# ========== FORCE LIGHT THEME (WHITE BACKGROUND) ==========
+st.markdown("""
+<style>
+    /* Force light theme with white background */
+    .stApp {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    
+    /* Sidebar light theme */
+    [data-testid="stSidebar"] {
+        background-color: #f0f2f6;
+    }
+    
+    /* Form elements light theme */
+    .stTextInput input, .stSelectbox select, .stTextArea textarea {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    
+    /* Ensure all text is dark */
+    .stMarkdown, p, span, label {
+        color: #000000;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # ========== SECURITY INITIALIZATION ==========
 # Clear session state on fresh load
 if 'app_initialized' not in st.session_state:
