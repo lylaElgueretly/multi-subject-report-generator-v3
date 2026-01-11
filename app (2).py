@@ -199,22 +199,6 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
     # Choose the correct banks
     if subject == "English":
         if year == 7:
-            # ========== DEBUG CODE START ==========
-            st.write("🔍 **DEBUG INFO for Year 7 English:**")
-            st.write(f"Student: {name}")
-            st.write(f"Target band selected: {target}")
-            
-            # Get the raw text from your statement file
-            raw_target_text = target_7_eng[target]
-            st.write(f"Raw text from statement file: '{raw_target_text}'")
-            
-            # Check for "tshe" typo
-            if "tshe" in raw_target_text:
-                st.error("❌ PROBLEM FOUND: 'tshe' is in the statement file!")
-            else:
-                st.success("✅ Good: No 'tshe' in statement file")
-            # ========== DEBUG CODE END ==========
-            
             opening = random.choice(opening_7_eng)
             # FIXED: CORRECT pronoun handling for attitude
             attitude_text = fix_pronouns_in_text(attitude_7_eng[att], p, p_poss)
@@ -340,22 +324,23 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             closer_sentence = random.choice(closer_8_sci)
             writing_sentence = ""  # Not used for science
 
-    # optional attitude target
+    # optional attitude target - MOVED TO END
     if attitude_target:
         attitude_target = sanitize_input(attitude_target)
-        attitude_target_sentence = f" Additionally, {lowercase_first(attitude_target)}"
+        attitude_target_sentence = f"{lowercase_first(attitude_target)}"
         if not attitude_target_sentence.endswith('.'):
             attitude_target_sentence += '.'
     else:
         attitude_target_sentence = ""
 
     comment_parts = [
-        attitude_sentence + attitude_target_sentence,
+        attitude_sentence,
         reading_sentence,
         writing_sentence,
         reading_target_sentence,
         writing_target_sentence,
-        closer_sentence
+        closer_sentence,
+        attitude_target_sentence  # Now at the end
     ]
 
     comment = " ".join([c for c in comment_parts if c])  # remove empty strings
@@ -502,8 +487,7 @@ if app_mode == "Single Student":
             
             st.caption("💡 Use dropdowns for faster input. Tab key moves between fields.")
         
-        # CHANGED: Updated label from "Optional Attitude Next Steps" to "Optional"
-        attitude_target = st.text_area("Optional",
+        attitude_target = st.text_area("Optional Attitude Next Steps",
                                      placeholder="E.g., continue to participate actively in class discussions...",
                                      height=60,
                                      key='attitude_target_input')
