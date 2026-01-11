@@ -47,7 +47,7 @@ try:
     from statements_year5_Maths import (
         opening_phrases as maths_opening_phrases,
         attitude_bank as maths_attitude_bank,
-        number_bank as maths_achievement_bank,
+        number_bank as maths_number_bank,
         problem_solving_bank as maths_problem_solving_bank,
         target_bank as maths_target_bank,
         closer_bank as maths_closer_bank
@@ -55,7 +55,7 @@ try:
     from statements_year5_Science import (
         opening_phrases as sci_opening_phrases,
         attitude_bank as sci_attitude_bank,
-        science_bank as sci_achievement_bank,
+        science_bank as sci_science_bank,
         target_bank as sci_target_bank,
         closer_bank as sci_closer_bank
     )
@@ -206,7 +206,10 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
         elif subject == "Maths":
             opening = random.choice(maths_opening_phrases)
             attitude_text = fix_pronouns_in_text(maths_attitude_bank[att], p, p_poss)
-            reading_text = fix_pronouns_in_text(maths_achievement_bank[achieve], p, p_poss)
+            # For Year 5 Maths, we need to combine number and problem solving banks
+            number_text = fix_pronouns_in_text(maths_number_bank.get(achieve, ""), p, p_poss)
+            problem_text = fix_pronouns_in_text(maths_problem_solving_bank.get(achieve, ""), p, p_poss)
+            reading_text = f"{number_text}. {problem_text}" if problem_text else number_text
             writing_text = ""  # not used
             reading_target_text = fix_pronouns_in_text(maths_target_bank[target], p, p_poss)
             writing_target_text = ""
@@ -215,7 +218,7 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
         else:  # Science
             opening = random.choice(sci_opening_phrases)
             attitude_text = fix_pronouns_in_text(sci_attitude_bank[att], p, p_poss)
-            reading_text = fix_pronouns_in_text(sci_achievement_bank[achieve], p, p_poss)
+            reading_text = fix_pronouns_in_text(sci_science_bank[achieve], p, p_poss)
             writing_text = ""
             reading_target_text = fix_pronouns_in_text(sci_target_bank[target], p, p_poss)
             writing_target_text = ""
@@ -245,13 +248,10 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             if year == 7:
                 opening = random.choice(opening_7_maths)
                 attitude_text = fix_pronouns_in_text(attitude_7_maths[att], p, p_poss)
-                # Combine achievement areas for comprehensive comment
-                achievement_parts = []
-                if achieve in number_algebra_7_maths:
-                    achievement_parts.append(fix_pronouns_in_text(number_algebra_7_maths[achieve], p, p_poss))
-                if achieve in problem_solving_7_maths:
-                    achievement_parts.append(fix_pronouns_in_text(problem_solving_7_maths[achieve], p, p_poss))
-                reading_text = ". ".join(achievement_parts)
+                # For Year 7 Maths, combine different skill areas
+                number_algebra_text = fix_pronouns_in_text(number_algebra_7_maths.get(achieve, ""), p, p_poss)
+                problem_solving_text = fix_pronouns_in_text(problem_solving_7_maths.get(achieve, ""), p, p_poss)
+                reading_text = f"{number_algebra_text}. {problem_solving_text}" if problem_solving_text else number_algebra_text
                 writing_text = ""
                 reading_target_text = fix_pronouns_in_text(target_7_maths[target], p, p_poss)
                 writing_target_text = ""
