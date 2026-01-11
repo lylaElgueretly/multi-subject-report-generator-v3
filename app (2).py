@@ -30,6 +30,33 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# ========== FORCE LIGHT THEME ==========
+st.markdown("""
+<script>
+    var stApp = window.parent.document.querySelector('.stApp');
+    if (stApp) {
+        stApp.classList.remove('dark-theme');
+        stApp.classList.add('light-theme');
+    }
+</script>
+<style>
+    /* Force light mode */
+    .stApp {
+        background-color: white !important;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #f0f2f6 !important;
+    }
+    .stApp, .stApp * {
+        color: #262730 !important;
+    }
+    input, select, textarea {
+        background-color: white !important;
+        color: #262730 !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # ========== SECURITY INITIALIZATION ==========
 # Clear session state on fresh load
 if 'app_initialized' not in st.session_state:
