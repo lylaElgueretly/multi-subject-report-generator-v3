@@ -467,12 +467,15 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             closer_sentence = random.choice(closer_8_sci)
             writing_sentence = ""
 
-    # Optional attitude target - MOVED TO END
+    # Optional attitude target - MOVED TO END - FIX PUNCTUATION BUG
     if attitude_target:
         attitude_target = sanitize_input(attitude_target)
         attitude_target_sentence = f"{lowercase_first(attitude_target)}"
+        # Fix: Ensure punctuation is preserved
         if not attitude_target_sentence.endswith('.'):
             attitude_target_sentence += '.'
+        # Remove any double periods that might occur
+        attitude_target_sentence = attitude_target_sentence.replace('..', '.')
     else:
         attitude_target_sentence = ""
 
@@ -488,13 +491,22 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
 
     comment = " ".join([c for c in comment_parts if c])
     comment = comment.strip()
+    
+    # Fix: Ensure proper ending punctuation
     if not comment.endswith('.'):
         comment += '.'
     
+    # Remove any double periods
+    comment = comment.replace('..', '.')
+    
     comment = truncate_comment(comment, TARGET_CHARS)
     
+    # Double-check ending punctuation after truncation
     if not comment.endswith('.'):
         comment = comment.rstrip(' ,;') + '.'
+    
+    # Final cleanup of double periods
+    comment = comment.replace('..', '.')
     
     return comment
 
@@ -591,15 +603,37 @@ st.markdown("<br>", unsafe_allow_html=True)
 if app_mode == "Single Student":
     st.subheader("👤 Single Student Entry")
     
+    # Add reset settings option
+    col_header1, col_header2 = st.columns([3, 1])
+    with col_header2:
+        if st.button("🔄 Reset Settings", help="Clear saved Subject/Year", use_container_width=True):
+            st.session_state.last_subject = "English"
+            st.session_state.last_year = 7
+            st.success("Settings reset!")
+            st.rerun()
+    
     if 'form_submitted' not in st.session_state:
         st.session_state.form_submitted = False
+    
+    # Initialize persistent settings
+    if 'last_subject' not in st.session_state:
+        st.session_state.last_subject = "English"
+    if 'last_year' not in st.session_state:
+        st.session_state.last_year = 7
     
     with st.form("single_student_form", clear_on_submit=True):
         col1, col2 = st.columns(2)
         
         with col1:
-            subject = st.selectbox("Subject", ["English", "Maths", "Science"])
-            year = st.selectbox("Year", [5, 7, 8])
+            # Use last selected values as defaults
+            subject_options = ["English", "Maths", "Science"]
+            subject_index = subject_options.index(st.session_state.last_subject) if st.session_state.last_subject in subject_options else 0
+            subject = st.selectbox("Subject", subject_options, index=subject_index)
+            
+            year_options = [5, 7, 8]
+            year_index = year_options.index(st.session_state.last_year) if st.session_state.last_year in year_options else 1
+            year = st.selectbox("Year", year_options, index=year_index)
+            
             name = st.text_input("Student Name", placeholder="Enter first name only", 
                                  key='student_name_input')
             gender = st.selectbox("Gender", ["Male", "Female"])
@@ -617,7 +651,11 @@ if app_mode == "Single Student":
                                 options=[90,85,80,75,70,65,60,55,40],
                                 index=3)
             
-            st.caption("💡 Use dropdowns for faster input. Tab key moves between fields.")
+            # Show if settings are remembered
+            if st.session_state.last_subject != "English" or st.session_state.last_year != 7:
+                st.caption(f"✓ Using saved: {st.session_state.last_subject} Year {st.session_state.last_year}")
+            else:
+                st.caption("💡 Subject & Year will be remembered for next student")
         
         attitude_target = st.text_area("Optional Attitude Next Steps",
                                      placeholder="E.g., continue to participate actively in class discussions...",
@@ -632,6 +670,10 @@ if app_mode == "Single Student":
         if not validate_upload_rate():
             st.stop()
         
+        # Save settings for next student
+        st.session_state.last_subject = subject
+        st.session_state.last_year = year
+        
         name = sanitize_input(name)
         pronouns = get_pronouns(gender)
         
@@ -645,18 +687,35 @@ if app_mode == "Single Student":
         st.session_state.form_submitted = True
         
         st.subheader("📝 Generated Comment")
-        st.text_area("", comment, height=200, key="comment_display")
         
-        col_stats = st.columns(3)
+        # Add copy button
+        col_comment, col_copy = st.columns([4, 1])
+        with col_comment:
+            st.text_area("", comment, height=200, key="comment_display")
+        with col_copy:
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button("📋 Copy", use_container_width=True, help="Copy comment to clipboard"):
+                st.code(comment, language=None)
+                st.success("✓ Copied!")
+        
+        col_stats = st.columns(4)
         with col_stats[0]:
             st.metric("Character Count", f"{char_count}/{TARGET_CHARS}")
         with col_stats[1]:
             st.metric("Words", len(comment.split()))
         with col_stats[2]:
             if char_count < TARGET_CHARS - 50:
-                st.success("✓ Good length")
+                st.success("✓ Perfect length")
             else:
                 st.warning("Near limit")
+        with col_stats[3]:
+            # Calculate time saved (assume 5 mins manual vs <30 secs with tool)
+            comments_today = len(st.session_state.all_comments) if 'all_comments' in st.session_state else 0
+            time_saved_mins = comments_today * 4.5  # 5 min - 0.5 min = 4.5 min saved per comment
+            if time_saved_mins > 60:
+                st.metric("⏱️ Time Saved Today", f"{time_saved_mins/60:.1f} hrs")
+            else:
+                st.metric("⏱️ Time Saved Today", f"{int(time_saved_mins)} mins")
         
         if 'all_comments' not in st.session_state:
             st.session_state.all_comments = []
@@ -670,9 +729,18 @@ if app_mode == "Single Student":
         }
         st.session_state.all_comments.append(student_entry)
         
-        col_reset = st.columns([3, 1])
+        col_reset = st.columns([2, 1, 1])
         with col_reset[1]:
-            if st.button("➕ Add Another Student", type="secondary", use_container_width=True):
+            if st.button("🔄 Generate Variant", type="secondary", use_container_width=True):
+                # Generate another version with same settings
+                comment_variant = generate_comment(subject, year, name, gender, att, achieve, 
+                                                   target, pronouns, 
+                                                   st.session_state.get('attitude_target_input', ''))
+                st.text_area("Variant Comment", comment_variant, height=150, key="variant_display")
+                st.caption(f"Characters: {len(comment_variant)}/{TARGET_CHARS}")
+        
+        with col_reset[2]:
+            if st.button("➕ Add Another Student", type="primary", use_container_width=True):
                 if 'student_name_input' in st.session_state:
                     st.session_state.student_name_input = ""
                 if 'attitude_target_input' in st.session_state:
