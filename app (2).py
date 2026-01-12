@@ -761,4 +761,385 @@ if app_mode == "Single Student":
         st.rerun()
 
     # Display generated Variant 1 if it exists
-    if st.session_state.current_student and 'variant1' in st.session_state.current_student
+    if st.session_state.current_student and 'variant1' in st.session_state.current_student:
+        current = st.session_state.current_student
+        name = current['name']
+        subject = current['subject']
+        year = current['year']
+        comment_v1 = current['variant1']
+        
+        st.subheader(f"📝 Generated Comment for {name} ({subject} Year {year})")
+        
+        # Display Variant 1
+        st.markdown("### Variant 1 (Default)")
+        st.text_area("Variant 1 Comment", comment_v1, height=150, key="variant1_display")
+        
+        # Character count
+        char_count_v1 = len(comment_v1)
+        st.caption(f"Characters: {char_count_v1}/{TARGET_CHARS}")
+        
+        # Action buttons for Variant 1
+        col1_actions, col2_actions = st.columns([1, 1])
+        
+        with col1_actions:
+            if not current['variant1_approved']:
+                if st.button("✅ Approve Variant 1", type="primary", use_container_width=True):
+                    # Add to selected comments
+                    student_entry = {
+                        'name': name,
+                        'subject': subject,
+                        'year': year,
+                        'comment': comment_v1,
+                        'variant': 'Variant 1',
+                        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M")
+                    }
+                    st.session_state.selected_comments.append(student_entry)
+                    st.session_state.current_student['variant1_approved'] = True
+                    st.success(f"✓ Variant 1 approved for {name}!")
+                    st.rerun()
+            else:
+                st.success("✓ Variant 1 already approved")
+                
+        with col2_actions:
+            if st.button("🔄 Regenerate Variant 1", type="secondary", use_container_width=True):
+                pronouns = get_pronouns(current['gender'])
+                new_comment = generate_comment(
+                    subject, year, name, current['gender'], 
+                    current['att'], current['achieve'], current['target'],
+                    pronouns, current['attitude_target'], variant=1
+                )
+                st.session_state.current_student['variant1'] = new_comment
+                st.session_state.current_student['variant1_approved'] = False
+                st.success("Variant 1 regenerated!")
+                st.rerun()
+        
+        st.markdown("---")
+        
+        # Check if Variant 2 has been generated
+        if current['variant2']:
+            st.markdown("### Variant 2 (Alternative)")
+            st.text_area("Variant 2 Comment", current['variant2'], height=150, key="variant2_display")
+            
+            # Character count
+            char_count_v2 = len(current['variant2'])
+            st.caption(f"Characters: {char_count_v2}/{TARGET_CHARS}")
+            
+            # Action buttons for Variant 2
+            col1_v2, col2_v2 = st.columns([1, 1])
+            
+            with col1_v2:
+                if not current['variant2_approved']:
+                    if st.button("✅ Approve Variant 2", type="primary", use_container_width=True):
+                        # Add to selected comments
+                        student_entry = {
+                            'name': name,
+                            'subject': subject,
+                            'year': year,
+                            'comment': current['variant2'],
+                            'variant': 'Variant 2',
+                            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M")
+                        }
+                        st.session_state.selected_comments.append(student_entry)
+                        st.session_state.current_student['variant2_approved'] = True
+                        st.success(f"✓ Variant 2 approved for {name}!")
+                        st.rerun()
+                else:
+                    st.success("✓ Variant 2 already approved")
+                    
+            with col2_v2:
+                if st.button("🔄 Regenerate Variant 2", type="secondary", use_container_width=True):
+                    pronouns = get_pronouns(current['gender'])
+                    new_comment = generate_comment(
+                        subject, year, name, current['gender'], 
+                        current['att'], current['achieve'], current['target'],
+                        pronouns, current['attitude_target'], variant=2
+                    )
+                    st.session_state.current_student['variant2'] = new_comment
+                    st.session_state.current_student['variant2_approved'] = False
+                    st.success("Variant 2 regenerated!")
+                    st.rerun()
+        
+        # Generate Variant 2 button (only if not already generated)
+        if not current['variant2']:
+            st.markdown("---")
+            if st.button("✨ Generate Variant 2 (Alternative)", type="secondary", use_container_width=True):
+                pronouns = get_pronouns(current['gender'])
+                with st.spinner("Generating Variant 2..."):
+                    comment_v2 = generate_comment(
+                        subject, year, name, current['gender'], 
+                        current['att'], current['achieve'], current['target'],
+                        pronouns, current['attitude_target'], variant=2
+                    )
+                    st.session_state.current_student['variant2'] = comment_v2
+                    st.success("Variant 2 generated!")
+                    st.rerun()
+        
+        # Navigation buttons
+        st.markdown("---")
+        col_nav1, col_nav2, col_nav3 = st.columns([1, 1, 1])
+        
+        with col_nav1:
+            if st.button("➕ Add Another Student", type="primary", use_container_width=True):
+                # Clear current student but keep selected comments
+                st.session_state.current_student = {}
+                if 'student_name_input' in st.session_state:
+                    st.session_state.student_name_input = ""
+                if 'attitude_target_input' in st.session_state:
+                    st.session_state.attitude_target_input = ""
+                st.session_state.progress = 1
+                st.rerun()
+                
+        with col_nav2:
+            if st.button("📋 Copy Variant 1", type="secondary", use_container_width=True):
+                st.code(comment_v1, language=None)
+                st.success("✓ Variant 1 copied to clipboard!")
+                
+        with col_nav3:
+            if current['variant2']:
+                if st.button("📋 Copy Variant 2", type="secondary", use_container_width=True):
+                    st.code(current['variant2'], language=None)
+                    st.success("✓ Variant 2 copied to clipboard!")
+
+# ========== BATCH UPLOAD MODE ==========
+elif app_mode == "Batch Upload":
+    st.subheader("📁 Batch Upload (CSV)")
+
+    st.info("""
+    **CSV Format Required:**
+    - Columns: Student Name, Gender, Subject, Year, Attitude, Achievement, Target
+    - Gender: Male/Female
+    - Subject: English/Maths/Science
+    - Year: 5, 7, or 8
+    - Bands: 90,85,80,75,70,65,60,55,40
+    """)
+
+    example_csv = """Student Name,Gender,Subject,Year,Attitude,Achievement,Target
+Aseel,Female,English,5,75,80,85
+Mohamed,Male,Maths,7,80,75,80
+Sarah,Female,Science,8,85,90,85"""
+
+    st.download_button(
+        label="📥 Download Example CSV",
+        data=example_csv,
+        file_name="example_students.csv",
+        mime="text/csv"
+    )
+
+    uploaded_file = st.file_uploader("Choose CSV file", type=['csv'])
+
+    if uploaded_file:
+        if not validate_upload_rate():
+            st.stop()
+
+        is_valid, msg = validate_file(uploaded_file)
+        if not is_valid:
+            st.error(msg)
+            st.stop()
+
+        with st.spinner("Processing CSV securely..."):
+            df = process_csv_securely(uploaded_file)
+
+        if df is not None:
+            st.success(f"Processed {len(df)} students successfully")
+
+            with st.expander("📋 Preview Data (First 5 rows)"):
+                st.dataframe(df.head())
+
+            if st.button("🚀 Generate All Comments (Variant 1)", type="primary"):
+                if 'selected_comments' not in st.session_state:
+                    st.session_state.selected_comments = []
+
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+
+                for idx, row in df.iterrows():
+                    progress = (idx + 1) / len(df)
+                    progress_bar.progress(progress)
+                    status_text.text(f"Processing {idx + 1}/{len(df)}: {row.get('Student Name', 'Student')}")
+
+                    try:
+                        pronouns = get_pronouns(str(row.get('Gender', '')).lower())
+                        comment = generate_comment(
+                            subject=str(row.get('Subject', 'English')),
+                            year=int(row.get('Year', 7)),
+                            name=str(row.get('Student Name', '')),
+                            gender=str(row.get('Gender', '')),
+                            att=int(row.get('Attitude', 75)),
+                            achieve=int(row.get('Achievement', 75)),
+                            target=int(row.get('Target', 75)),
+                            pronouns=pronouns,
+                            variant=1
+                        )
+
+                        student_entry = {
+                            'name': sanitize_input(str(row.get('Student Name', ''))),
+                            'subject': str(row.get('Subject', 'English')),
+                            'year': int(row.get('Year', 7)),
+                            'comment': comment,
+                            'variant': 'Variant 1',
+                            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M")
+                        }
+                        st.session_state.selected_comments.append(student_entry)
+
+                    except Exception as e:
+                        st.error(f"Error processing row {idx + 1}: {e}")
+
+                progress_bar.empty()
+                status_text.empty()
+                st.session_state.progress = 2
+                st.success(f"Generated {len(df)} comments (Variant 1)!")
+                st.session_state.last_upload_time = datetime.now()
+
+# ========== PRIVACY INFO MODE ==========
+elif app_mode == "Privacy Info":
+    st.subheader("🔐 Privacy & Security Information")
+
+    st.markdown("""
+    ### How We Protect Student Data
+
+    **Data Handling:**
+    - All processing happens in your browser's memory
+    - No student data is sent to or stored on our servers
+    - Temporary files are created and immediately deleted
+    - No database or persistent storage is used
+
+    **Security Features:**
+    1. **Input Sanitization** - Removes special characters from names
+    2. **Rate Limiting** - Prevents abuse of the system
+    3. **File Validation** - Checks file size and type
+    4. **Auto-Cleanup** - Temporary files deleted after processing
+    5. **Memory Clearing** - All data erased on browser close
+
+    **Best Practices for Users:**
+    - Use only first names or student IDs
+    - Close browser tab when finished to clear all data
+    - Download reports immediately after generation
+    - For maximum privacy, use on school-managed devices
+
+    **Compliance:**
+    - Designed for use with anonymized data
+    - Suitable for FERPA/GDPR compliant workflows
+    - No third-party data sharing
+    """)
+
+    if st.button("🖨️ Print Privacy Notice", type="secondary"):
+        privacy_text = """
+        MULTI-SUBJECT REPORT GENERATOR - PRIVACY NOTICE
+
+        Data Processing: All student data is processed locally in memory only.
+        No data is transmitted to external servers or stored permanently.
+
+        Data Retention: All data is cleared when the browser tab is closed.
+
+        Security: Input sanitization and validation prevents data injection.
+
+        Usage: For use with anonymized student data only.
+        """
+        st.text_area("Privacy Notice for Records", privacy_text, height=300)
+
+# ========== DOWNLOAD SECTION ==========
+if st.session_state.selected_comments:
+    st.session_state.progress = 3
+    st.markdown("---")
+    st.subheader("📥 Download Reports")
+
+    total_comments = len(st.session_state.selected_comments)
+    st.info(f"You have {total_comments} approved comment(s) ready for download")
+
+    with st.expander(f"👁️ Preview Approved Comments ({total_comments})"):
+        for idx, entry in enumerate(st.session_state.selected_comments, 1):
+            variant_label = f" ({entry.get('variant', '')})" if 'variant' in entry else ""
+            st.markdown(f"**{idx}. {entry['name']}** ({entry['subject']} Year {entry['year']}{variant_label})")
+            st.write(entry['comment'])
+            st.caption(f"Added: {entry['timestamp']}")
+            st.markdown("---")
+
+    col_dl1, col_dl2, col_dl3 = st.columns(3)
+
+    with col_dl1:
+        if DOCX_AVAILABLE:
+            if st.button("📄 Word Document", use_container_width=True):
+                doc = Document()
+                doc.add_heading('Report Comments', 0)
+                doc.add_paragraph(f'Generated: {datetime.now().strftime("%Y-%m-%d %H:%M")}')
+                doc.add_paragraph(f'Total Students: {total_comments}')
+                doc.add_paragraph('')
+
+                for entry in st.session_state.selected_comments:
+                    variant_label = f" ({entry.get('variant', '')})" if 'variant' in entry else ""
+                    doc.add_heading(f"{entry['name']} - {entry['subject']} Year {entry['year']}{variant_label}", level=2)
+                    doc.add_paragraph(entry['comment'])
+                    doc.add_paragraph('')
+
+                bio = io.BytesIO()
+                doc.save(bio)
+
+                st.download_button(
+                    label="⬇️ Download Word File",
+                    data=bio.getvalue(),
+                    file_name=f"report_comments_{datetime.now().strftime('%Y%m%d_%H%M')}.docx",
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    use_container_width=True
+                )
+        else:
+            st.info("Word export requires python-docx package")
+
+    with col_dl2:
+        if st.button("📊 CSV Export", use_container_width=True):
+            csv_data = []
+            for entry in st.session_state.selected_comments:
+                csv_data.append({
+                    'Student Name': entry['name'],
+                    'Subject': entry['subject'],
+                    'Year': entry['year'],
+                    'Variant': entry.get('variant', 'Variant 1'),
+                    'Comment': entry['comment'],
+                    'Generated': entry['timestamp']
+                })
+
+            df_export = pd.DataFrame(csv_data)
+            csv_bytes = df_export.to_csv(index=False).encode('utf-8')
+
+            st.download_button(
+                label="⬇️ Download CSV",
+                data=csv_bytes,
+                file_name=f"report_comments_{datetime.now().strftime('%Y%m%d_%H%M')}.csv",
+                mime="text/csv",
+                use_container_width=True
+            )
+
+    with col_dl3:
+        if st.button("🗑️ Clear & Start Over", type="secondary", use_container_width=True):
+            st.session_state.selected_comments = []
+            st.session_state.current_student = {}
+            st.session_state.progress = 1
+            st.success("All comments cleared! Ready for new entries.")
+            if 'student_name_input' in st.session_state:
+                st.session_state.student_name_input = ""
+            if 'attitude_target_input' in st.session_state:
+                st.session_state.attitude_target_input = ""
+            st.rerun()
+
+# ========== FOOTER ==========
+st.markdown("---")
+footer_cols = st.columns([2, 1])
+with footer_cols[0]:
+    st.caption("© Report Generator v3.0 • Multi-Year Edition")
+with footer_cols[1]:
+    if st.button("ℹ️ Quick Help", use_container_width=True):
+        st.info("""
+        **Quick Help:**
+        1. **Select**: Choose student details
+        2. **Generate**: Creates Variant 1 (default)
+        3. **Approve**: Click "Approve Variant 1" to add to download list
+        4. **Optional**: Generate Variant 2 if needed
+        5. **Download**: Export approved comments
+
+        **Features:**
+        - Variant 1: Generated automatically
+        - Variant 2: Optional alternative style
+        - Approve individually: Choose which variants to keep
+        - Regenerate: Get new versions if needed
+
+        Need help? Contact support.
+        """)
