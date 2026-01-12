@@ -746,7 +746,20 @@ if app_mode == "Single Student":
                 if 'attitude_target_input' in st.session_state:
                     st.session_state.attitude_target_input = ""
                 st.session_state.progress = 1
+                st.session_state.scroll_to_top = True  # Set flag to scroll to top
                 st.rerun()
+        
+        # Auto-scroll to top after clicking "Add Another Student"
+        if st.session_state.get('scroll_to_top', False):
+            st.session_state.scroll_to_top = False
+            st.markdown("""
+            <script>
+                window.parent.document.querySelector('section.main').scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            </script>
+            """, unsafe_allow_html=True)
 
 # ========== BATCH UPLOAD MODE ==========
 elif app_mode == "Batch Upload":
