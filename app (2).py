@@ -217,422 +217,287 @@ def fix_pronouns_in_text(text, pronoun, possessive):
     return text
 
 # ========== COMMENT GENERATOR ==========
-def generate_comment(subject, year, name, gender, att, achieve, target, optional_text=None):
-    """Generate a report comment based on subject, year, and performance bands"""
-    p, p_poss = get_pronouns(gender)
+def generate_comment(subject, year, name, gender, att, achieve, target, pronouns, attitude_target=None):
+    p, p_poss = pronouns
     name = sanitize_input(name)
-    
-    # Initialize comment parts
-    comment_parts = []
-    
-    # Subject-specific comment generation
-    if subject == "English":
-        if year == 5:
+
+    # Year 5
+    if year == 5:
+        if subject == "English":
             opening = random.choice(opening_5_eng)
             attitude_text = fix_pronouns_in_text(attitude_5_eng[att], p, p_poss)
             attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
             
             reading_text = fix_pronouns_in_text(reading_5_eng[achieve], p, p_poss)
-            reading_text = ensure_proper_capitalization(reading_text)
             if reading_text[0].islower():
-                reading_text = f"{p.capitalize()} {reading_text}"
-            reading_sentence = f"In reading, {lowercase_first(reading_text)}"
+                reading_text = f"{p} {reading_text}"
+            reading_sentence = f"In reading, {reading_text}"
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
             
             writing_text = fix_pronouns_in_text(writing_5_eng[achieve], p, p_poss)
-            writing_text = ensure_proper_capitalization(writing_text)
             if writing_text[0].islower():
-                writing_text = f"{p.capitalize()} {writing_text}"
-            writing_sentence = f"In writing, {lowercase_first(writing_text)}"
+                writing_text = f"{p} {writing_text}"
+            writing_sentence = f"In writing, {writing_text}"
+            if not writing_sentence.endswith('.'):
+                writing_sentence += '.'
             
             reading_target_text = fix_pronouns_in_text(target_5_eng[target], p, p_poss)
-            reading_target_text = ensure_proper_capitalization(reading_target_text)
             reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
             
             writing_target_text = fix_pronouns_in_text(target_write_5_eng[target], p, p_poss)
-            writing_target_text = ensure_proper_capitalization(writing_target_text)
             writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}"
+            if not writing_target_sentence.endswith('.'):
+                writing_target_sentence += '.'
             
             closer_sentence = random.choice(closer_5_eng)
             
-            comment_parts = [
-                attitude_sentence,
-                reading_sentence,
-                writing_sentence,
-                reading_target_sentence,
-                writing_target_sentence,
-                closer_sentence
-            ]
-            
-        elif year == 7:
-            opening = random.choice(opening_7_eng)
-            attitude_text = fix_pronouns_in_text(attitude_7_eng[att], p, p_poss)
+        elif subject == "Maths":
+            opening = random.choice(opening_5_maths)
+            attitude_text = fix_pronouns_in_text(attitude_5_maths[att], p, p_poss)
             attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
             
-            reading_text = fix_pronouns_in_text(reading_7_eng[achieve], p, p_poss)
-            reading_text = ensure_proper_capitalization(reading_text)
-            if reading_text[0].islower():
-                reading_text = f"{p.capitalize()} {reading_text}"
-            reading_sentence = f"In reading, {lowercase_first(reading_text)}"
+            # Use number_bank for achievement
+            number_text = fix_pronouns_in_text(number_5_maths[achieve], p, p_poss)
+            if number_text[0].islower():
+                number_text = f"{p} {number_text}"
+            reading_sentence = number_text
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
             
-            writing_text = fix_pronouns_in_text(writing_7_eng[achieve], p, p_poss)
-            writing_text = ensure_proper_capitalization(writing_text)
-            if writing_text[0].islower():
-                writing_text = f"{p.capitalize()} {writing_text}"
-            writing_sentence = f"In writing, {lowercase_first(writing_text)}"
+            writing_sentence = ""
             
-            reading_target_text = fix_pronouns_in_text(target_7_eng[target], p, p_poss)
-            reading_target_text = ensure_proper_capitalization(reading_target_text)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}"
+            target_text = fix_pronouns_in_text(target_5_maths[target], p, p_poss)
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
             
-            writing_target_text = fix_pronouns_in_text(target_write_7_eng[target], p, p_poss)
-            writing_target_text = ensure_proper_capitalization(writing_target_text)
-            writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}"
+            writing_target_sentence = ""
+            closer_sentence = random.choice(closer_5_maths)
             
-            closer_sentence = random.choice(closer_7_eng)
-            
-            comment_parts = [
-                attitude_sentence,
-                reading_sentence,
-                writing_sentence,
-                reading_target_sentence,
-                writing_target_sentence,
-                closer_sentence
-            ]
-            
-        else:  # Year 8
-            opening = random.choice(opening_8_eng)
-            attitude_text = fix_pronouns_in_text(attitude_8_eng[att], p, p_poss)
-            attitude_sentence = f"{opening} {name} {attitude_text}"
-            
-            reading_text = fix_pronouns_in_text(reading_8_eng[achieve], p, p_poss)
-            reading_text = ensure_proper_capitalization(reading_text)
-            if reading_text[0].islower():
-                reading_text = f"{p.capitalize()} {reading_text}"
-            reading_sentence = f"In reading, {lowercase_first(reading_text)}"
-            
-            writing_text = fix_pronouns_in_text(writing_8_eng[achieve], p, p_poss)
-            writing_text = ensure_proper_capitalization(writing_text)
-            if writing_text[0].islower():
-                writing_text = f"{p.capitalize()} {writing_text}"
-            writing_sentence = f"In writing, {lowercase_first(writing_text)}"
-            
-            reading_target_text = fix_pronouns_in_text(target_8_eng[target], p, p_poss)
-            reading_target_text = ensure_proper_capitalization(reading_target_text)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}"
-            
-            writing_target_text = fix_pronouns_in_text(target_write_8_eng[target], p, p_poss)
-            writing_target_text = ensure_proper_capitalization(writing_target_text)
-            writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}"
-            
-            closer_sentence = random.choice(closer_8_eng)
-            
-            comment_parts = [
-                attitude_sentence,
-                reading_sentence,
-                writing_sentence,
-                reading_target_sentence,
-                writing_target_sentence,
-                closer_sentence
-            ]
-        
-    elif subject == "Science":
-        if year == 5:
+        else:  # Science
             opening = random.choice(opening_5_sci)
             attitude_text = fix_pronouns_in_text(attitude_5_sci[att], p, p_poss)
             attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
             
             science_text = fix_pronouns_in_text(science_5_sci[achieve], p, p_poss)
-            science_text = ensure_proper_capitalization(science_text)
             if science_text[0].islower():
-                science_text = f"{p.capitalize()} {science_text}"
-            science_sentence = science_text
+                science_text = f"{p} {science_text}"
+            reading_sentence = science_text
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
             
             target_text = fix_pronouns_in_text(target_5_sci[target], p, p_poss)
-            target_text = ensure_proper_capitalization(target_text)
-            target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
             
+            writing_target_sentence = ""
             closer_sentence = random.choice(closer_5_sci)
+            writing_sentence = ""
+    
+    # Year 7
+    elif year == 7:
+        if subject == "English":
+            opening = random.choice(opening_7_eng)
+            attitude_text = fix_pronouns_in_text(attitude_7_eng[att], p, p_poss)
+            attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
             
-            comment_parts = [
-                attitude_sentence,
-                science_sentence,
-                target_sentence,
-                closer_sentence
-            ]
+            reading_text = fix_pronouns_in_text(reading_7_eng[achieve], p, p_poss)
+            if reading_text[0].islower():
+                reading_text = f"{p} {reading_text}"
+            reading_sentence = f"In reading, {reading_text}"
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
             
-        elif year == 7:
+            writing_text = fix_pronouns_in_text(writing_7_eng[achieve], p, p_poss)
+            if writing_text[0].islower():
+                writing_text = f"{p} {writing_text}"
+            writing_sentence = f"In writing, {writing_text}"
+            if not writing_sentence.endswith('.'):
+                writing_sentence += '.'
+            
+            reading_target_text = fix_pronouns_in_text(target_7_eng[target], p, p_poss)
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
+            
+            writing_target_text = fix_pronouns_in_text(target_write_7_eng[target], p, p_poss)
+            writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}"
+            if not writing_target_sentence.endswith('.'):
+                writing_target_sentence += '.'
+            
+            closer_sentence = random.choice(closer_7_eng)
+            
+        elif subject == "Maths":
+            opening = random.choice(opening_7_maths)
+            attitude_text = fix_pronouns_in_text(attitude_7_maths[att], p, p_poss)
+            attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
+            
+            # Use number and algebra bank
+            number_text = fix_pronouns_in_text(number_7_maths[achieve], p, p_poss)
+            if number_text[0].islower():
+                number_text = f"{p} {number_text}"
+            reading_sentence = number_text
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
+            
+            target_text = fix_pronouns_in_text(target_7_maths[target], p, p_poss)
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
+            
+            writing_target_sentence = ""
+            closer_sentence = random.choice(closer_7_maths)
+            writing_sentence = ""
+            
+        else:  # Science
             opening = random.choice(opening_7_sci)
             attitude_text = fix_pronouns_in_text(attitude_7_sci[att], p, p_poss)
             attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
             
             science_text = fix_pronouns_in_text(science_7_sci[achieve], p, p_poss)
-            science_text = ensure_proper_capitalization(science_text)
             if science_text[0].islower():
-                science_text = f"{p.capitalize()} {science_text}"
-            science_sentence = science_text
+                science_text = f"{p} {science_text}"
+            reading_sentence = science_text
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
             
             target_text = fix_pronouns_in_text(target_7_sci[target], p, p_poss)
-            target_text = ensure_proper_capitalization(target_text)
-            target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
             
+            writing_target_sentence = ""
             closer_sentence = random.choice(closer_7_sci)
+            writing_sentence = ""
+    
+    # Year 8
+    else:  # year == 8
+        if subject == "English":
+            opening = random.choice(opening_8_eng)
+            attitude_text = fix_pronouns_in_text(attitude_8_eng[att], p, p_poss)
+            attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
             
-            comment_parts = [
-                attitude_sentence,
-                science_sentence,
-                target_sentence,
-                closer_sentence
-            ]
+            reading_text = fix_pronouns_in_text(reading_8_eng[achieve], p, p_poss)
+            if reading_text[0].islower():
+                reading_text = f"{p} {reading_text}"
+            reading_sentence = f"In reading, {reading_text}"
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
             
-        else:  # Year 8
+            writing_text = fix_pronouns_in_text(writing_8_eng[achieve], p, p_poss)
+            if writing_text[0].islower():
+                writing_text = f"{p} {writing_text}"
+            writing_sentence = f"In writing, {writing_text}"
+            if not writing_sentence.endswith('.'):
+                writing_sentence += '.'
+            
+            reading_target_text = fix_pronouns_in_text(target_8_eng[target], p, p_poss)
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
+            
+            writing_target_text = fix_pronouns_in_text(target_write_8_eng[target], p, p_poss)
+            writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}"
+            if not writing_target_sentence.endswith('.'):
+                writing_target_sentence += '.'
+            
+            closer_sentence = random.choice(closer_8_eng)
+            
+        elif subject == "Maths":
+            opening = random.choice(opening_8_maths)
+            attitude_text = fix_pronouns_in_text(attitude_8_maths[att], p, p_poss)
+            attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
+            
+            maths_text = fix_pronouns_in_text(maths_8_maths[achieve], p, p_poss)
+            if maths_text[0].islower():
+                maths_text = f"{p} {maths_text}"
+            reading_sentence = maths_text
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
+            
+            target_text = fix_pronouns_in_text(target_8_maths[target], p, p_poss)
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
+            
+            writing_target_sentence = ""
+            closer_sentence = random.choice(closer_8_maths)
+            writing_sentence = ""
+            
+        else:  # Science
             opening = random.choice(opening_8_sci)
             attitude_text = fix_pronouns_in_text(attitude_8_sci[att], p, p_poss)
             attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
             
             science_text = fix_pronouns_in_text(science_8_sci[achieve], p, p_poss)
-            science_text = ensure_proper_capitalization(science_text)
             if science_text[0].islower():
-                science_text = f"{p.capitalize()} {science_text}"
-            science_sentence = science_text
+                science_text = f"{p} {science_text}"
+            reading_sentence = science_text
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
             
             target_text = fix_pronouns_in_text(target_8_sci[target], p, p_poss)
-            target_text = ensure_proper_capitalization(target_text)
-            target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
             
+            writing_target_sentence = ""
             closer_sentence = random.choice(closer_8_sci)
-            
-            comment_parts = [
-                attitude_sentence,
-                science_sentence,
-                target_sentence,
-                closer_sentence
-            ]
-        
-    elif subject == "Maths":
-        if year == 5:
-            opening = random.choice(opening_5_math)
-            attitude_text = fix_pronouns_in_text(attitude_5_math[att], p, p_poss)
-            attitude_sentence = f"{opening} {name} {attitude_text}"
-            
-            maths_text = fix_pronouns_in_text(maths_5_math[achieve], p, p_poss)
-            maths_text = ensure_proper_capitalization(maths_text)
-            if maths_text[0].islower():
-                maths_text = f"{p.capitalize()} {maths_text}"
-            maths_sentence = maths_text
-            
-            target_text = fix_pronouns_in_text(target_5_math[target], p, p_poss)
-            target_text = ensure_proper_capitalization(target_text)
-            target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
-            
-            closer_sentence = random.choice(closer_5_math)
-            
-            comment_parts = [
-                attitude_sentence,
-                maths_sentence,
-                target_sentence,
-                closer_sentence
-            ]
-            
-        elif year == 7:
-            opening = random.choice(opening_7_math)
-            attitude_text = fix_pronouns_in_text(attitude_7_math[att], p, p_poss)
-            attitude_sentence = f"{opening} {name} {attitude_text}"
-            
-            maths_text = fix_pronouns_in_text(maths_7_math[achieve], p, p_poss)
-            maths_text = ensure_proper_capitalization(maths_text)
-            if maths_text[0].islower():
-                maths_text = f"{p.capitalize()} {maths_text}"
-            maths_sentence = maths_text
-            
-            target_text = fix_pronouns_in_text(target_7_math[target], p, p_poss)
-            target_text = ensure_proper_capitalization(target_text)
-            target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
-            
-            closer_sentence = random.choice(closer_7_math)
-            
-            comment_parts = [
-                attitude_sentence,
-                maths_sentence,
-                target_sentence,
-                closer_sentence
-            ]
-            
-        else:  # Year 8
-            opening = random.choice(opening_8_math)
-            attitude_text = fix_pronouns_in_text(attitude_8_math[att], p, p_poss)
-            attitude_sentence = f"{opening} {name} {attitude_text}"
-            
-            maths_text = fix_pronouns_in_text(maths_8_math[achieve], p, p_poss)
-            maths_text = ensure_proper_capitalization(maths_text)
-            if maths_text[0].islower():
-                maths_text = f"{p.capitalize()} {maths_text}"
-            maths_sentence = maths_text
-            
-            target_text = fix_pronouns_in_text(target_8_math[target], p, p_poss)
-            target_text = ensure_proper_capitalization(target_text)
-            target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
-            
-            closer_sentence = random.choice(closer_8_math)
-            
-            comment_parts = [
-                attitude_sentence,
-                maths_sentence,
-                target_sentence,
-                closer_sentence
-            ]
-        
-    elif subject == "ESL (IGCSE)":
-        opening = random.choice(opening_esl)
-        attitude_text = fix_pronouns_in_text(attitude_esl[att], p, p_poss)
-        attitude_sentence = f"{opening} {name} {attitude_text}"
-        
-        # Reading
-        reading_text = fix_pronouns_in_text(reading_esl[achieve], p, p_poss)
-        reading_text = ensure_proper_capitalization(reading_text)
-        if reading_text[0].islower():
-            reading_text = f"{p.capitalize()} {reading_text}"
-        reading_sentence = f"In reading, {lowercase_first(reading_text)}"
-        
-        # Writing
-        writing_text = fix_pronouns_in_text(writing_esl[achieve], p, p_poss)
-        writing_text = ensure_proper_capitalization(writing_text)
-        if writing_text[0].islower():
-            writing_text = f"{p.capitalize()} {writing_text}"
-        writing_sentence = f"In writing, {lowercase_first(writing_text)}"
-        
-        # Speaking
-        speaking_text = fix_pronouns_in_text(speaking_esl[achieve], p, p_poss)
-        speaking_text = ensure_proper_capitalization(speaking_text)
-        if speaking_text[0].islower():
-            speaking_text = f"{p.capitalize()} {speaking_text}"
-        speaking_sentence = f"In speaking, {lowercase_first(speaking_text)}"
-        
-        # Listening
-        listening_text = fix_pronouns_in_text(listening_esl[achieve], p, p_poss)
-        listening_text = ensure_proper_capitalization(listening_text)
-        if listening_text[0].islower():
-            listening_text = f"{p.capitalize()} {listening_text}"
-        listening_sentence = f"In listening, {lowercase_first(listening_text)}"
-        
-        # Targets
-        reading_target_text = fix_pronouns_in_text(target_reading_esl[target], p, p_poss)
-        reading_target_text = ensure_proper_capitalization(reading_target_text)
-        reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}"
-        
-        writing_target_text = fix_pronouns_in_text(target_write_esl[target], p, p_poss)
-        writing_target_text = ensure_proper_capitalization(writing_target_text)
-        writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}"
-        
-        closer_sentence = random.choice(closer_esl)
-        
-        comment_parts = [
-            attitude_sentence,
-            reading_sentence,
-            writing_sentence,
-            speaking_sentence,
-            listening_sentence,
-            reading_target_sentence,
-            writing_target_sentence,
-            closer_sentence
-        ]
-        
-    elif subject == "Chemistry":
-        opening = random.choice(opening_chem)
-        attitude_text = fix_pronouns_in_text(attitude_chem[att], p, p_poss)
-        attitude_sentence = f"{opening} {name} {attitude_text}"
-        
-        # Handle Chemistry achievement text which may have multiple sentences
-        chemistry_text = fix_pronouns_in_text(chemistry_chem[achieve], p, p_poss)
-        chemistry_text = ensure_proper_capitalization(chemistry_text)
-        
-        # Split into sentences and ensure each starts with pronoun
-        sentences = re.split(r'(?<=[.!?])\s+', chemistry_text)
-        fixed_sentences = []
-        
-        for sentence in sentences:
-            if sentence:
-                # Remove any trailing period
-                sentence = sentence.strip()
-                if sentence.endswith('.'):
-                    sentence = sentence[:-1]
-                
-                # If sentence starts with uppercase verb (no pronoun), add pronoun
-                if sentence and sentence[0].isupper():
-                    words = sentence.split()
-                    if len(words) > 0:
-                        first_word = words[0]
-                        # Check if it's a verb ending in -ed
-                        if first_word.endswith('ed'):
-                            sentence = f"{p.capitalize()} {lowercase_first(sentence)}"
-                        # Check specific verbs
-                        elif first_word in ['Grasped', 'Explained', 'Demonstrated', 'Showed']:
-                            sentence = f"{p.capitalize()} {lowercase_first(sentence)}"
-                
-                fixed_sentences.append(sentence + '.')
-        
-        chemistry_sentence = ' '.join(fixed_sentences)
-        
-        target_text = fix_pronouns_in_text(target_chem[target], p, p_poss)
-        target_text = ensure_proper_capitalization(target_text)
-        target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
-        
-        closer_sentence = random.choice(closer_chem)
-        
-        comment_parts = [
-            attitude_sentence,
-            chemistry_sentence,
-            target_sentence,
-            closer_sentence
-        ]
-    
+            writing_sentence = ""
+
+    # Optional attitude target - MOVED TO END
+    if attitude_target:
+        attitude_target = sanitize_input(attitude_target)
+        attitude_target_sentence = f"{lowercase_first(attitude_target)}"
+        if not attitude_target_sentence.endswith('.'):
+            attitude_target_sentence += '.'
     else:
-        # Default fallback if subject not recognized
-        comment_parts = [f"{name} has worked in {subject} this term."]
-    
-    # ADD OPTIONAL TEXT TO COMMENT_PARTS (BEFORE JOINING)
-    if optional_text:
-        optional_text = str(optional_text).strip()
-        if optional_text:
-            # Sanitize and ensure proper formatting
-            optional_text = sanitize_input(optional_text, max_length=200)
-            
-            # Ensure optional text starts with capital letter
-            if optional_text and optional_text[0].islower():
-                optional_text = optional_text[0].upper() + optional_text[1:]
-            
-            # Add "Additionally" prefix and ensure it ends with period
-            optional_sentence = f"Additionally, {lowercase_first(optional_text)}"
-            if not optional_sentence.endswith('.'):
-                optional_sentence += '.'
-            
-            # Add to comment parts list (at the end, before closer if exists)
-            if comment_parts and 'closer_sentence' in locals():
-                # Insert before the closer sentence
-                closer_index = len(comment_parts) - 1
-                comment_parts.insert(closer_index, optional_sentence)
-            else:
-                # Just append to the end
-                comment_parts.append(optional_sentence)
-    
-    # Ensure all sentences end with period
-    for i in range(len(comment_parts)):
-        if not comment_parts[i].endswith('.'):
-            comment_parts[i] += '.'
-    
-    # Join comment parts
+        attitude_target_sentence = ""
+
+    comment_parts = [
+        attitude_sentence,
+        reading_sentence,
+        writing_sentence,
+        reading_target_sentence,
+        writing_target_sentence,
+        closer_sentence,
+        attitude_target_sentence  # Now at the end
+    ]
+
     comment = " ".join([c for c in comment_parts if c])
+    comment = comment.strip()
+    if not comment.endswith('.'):
+        comment += '.'
     
-    # Truncate to target length
     comment = truncate_comment(comment, TARGET_CHARS)
     
-    # Ensure comment ends with period
     if not comment.endswith('.'):
         comment = comment.rstrip(' ,;') + '.'
     
-    # Final capitalization check
-    comment = ensure_proper_capitalization(comment)
-    
     return comment
+
 # ========== STREAMLIT APP LAYOUT ==========
 
 # Sidebar
