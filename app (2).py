@@ -231,26 +231,32 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
                 attitude_sentence += '.'
             
             reading_text = fix_pronouns_in_text(reading_5_eng[achieve], p, p_poss)
-            if reading_text[0].islower():
-                reading_text = f"{p} {reading_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if reading_text.lower().startswith(f"{p} "):
+                reading_text = f"{p.capitalize()}{reading_text[len(p):]}"
+            elif reading_text[0].islower():
+                reading_text = f"{p.capitalize()} {reading_text}"
             reading_sentence = f"In reading, {reading_text}"
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             writing_text = fix_pronouns_in_text(writing_5_eng[achieve], p, p_poss)
-            if writing_text[0].islower():
-                writing_text = f"{p} {writing_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if writing_text.lower().startswith(f"{p} "):
+                writing_text = f"{p.capitalize()}{writing_text[len(p):]}"
+            elif writing_text[0].islower():
+                writing_text = f"{p.capitalize()} {writing_text}"
             writing_sentence = f"In writing, {writing_text}"
             if not writing_sentence.endswith('.'):
                 writing_sentence += '.'
             
             reading_target_text = fix_pronouns_in_text(target_5_eng[target], p, p_poss)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}"
+            reading_target_sentence = f"For the next term, {p.capitalize()} should {lowercase_first(reading_target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
             writing_target_text = fix_pronouns_in_text(target_write_5_eng[target], p, p_poss)
-            writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}"
+            writing_target_sentence = f"Additionally, {p.capitalize()} should {lowercase_first(writing_target_text)}"
             if not writing_target_sentence.endswith('.'):
                 writing_target_sentence += '.'
             
@@ -265,8 +271,11 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             # Use number_bank for achievement
             number_text = fix_pronouns_in_text(number_5_maths[achieve], p, p_poss)
-            if number_text[0].islower():
-                number_text = f"{p} {number_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if number_text.lower().startswith(f"{p} "):
+                number_text = f"{p.capitalize()}{number_text[len(p):]}"
+            elif number_text[0].islower():
+                number_text = f"{p.capitalize()} {number_text}"
             reading_sentence = number_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
@@ -274,7 +283,7 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             writing_sentence = ""
             
             target_text = fix_pronouns_in_text(target_5_maths[target], p, p_poss)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            reading_target_sentence = f"For the next term, {p.capitalize()} should {lowercase_first(target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
@@ -289,14 +298,17 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
                 attitude_sentence += '.'
             
             science_text = fix_pronouns_in_text(science_5_sci[achieve], p, p_poss)
-            if science_text[0].islower():
-                science_text = f"{p} {science_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if science_text.lower().startswith(f"{p} "):
+                science_text = f"{p.capitalize()}{science_text[len(p):]}"
+            elif science_text[0].islower():
+                science_text = f"{p.capitalize()} {science_text}"
             reading_sentence = science_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             target_text = fix_pronouns_in_text(target_5_sci[target], p, p_poss)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            reading_target_sentence = f"For the next term, {p.capitalize()} should {lowercase_first(target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
@@ -314,26 +326,32 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
                 attitude_sentence += '.'
             
             reading_text = fix_pronouns_in_text(reading_7_eng[achieve], p, p_poss)
-            if reading_text[0].islower():
-                reading_text = f"{p} {reading_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if reading_text.lower().startswith(f"{p} "):
+                reading_text = f"{p.capitalize()}{reading_text[len(p):]}"
+            elif reading_text[0].islower():
+                reading_text = f"{p.capitalize()} {reading_text}"
             reading_sentence = f"In reading, {reading_text}"
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             writing_text = fix_pronouns_in_text(writing_7_eng[achieve], p, p_poss)
-            if writing_text[0].islower():
-                writing_text = f"{p} {writing_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if writing_text.lower().startswith(f"{p} "):
+                writing_text = f"{p.capitalize()}{writing_text[len(p):]}"
+            elif writing_text[0].islower():
+                writing_text = f"{p.capitalize()} {writing_text}"
             writing_sentence = f"In writing, {writing_text}"
             if not writing_sentence.endswith('.'):
                 writing_sentence += '.'
             
             reading_target_text = fix_pronouns_in_text(target_7_eng[target], p, p_poss)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}"
+            reading_target_sentence = f"For the next term, {p.capitalize()} should {lowercase_first(reading_target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
             writing_target_text = fix_pronouns_in_text(target_write_7_eng[target], p, p_poss)
-            writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}"
+            writing_target_sentence = f"Additionally, {p.capitalize()} should {lowercase_first(writing_target_text)}"
             if not writing_target_sentence.endswith('.'):
                 writing_target_sentence += '.'
             
@@ -348,14 +366,17 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             # Use number and algebra bank
             number_text = fix_pronouns_in_text(number_7_maths[achieve], p, p_poss)
-            if number_text[0].islower():
-                number_text = f"{p} {number_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if number_text.lower().startswith(f"{p} "):
+                number_text = f"{p.capitalize()}{number_text[len(p):]}"
+            elif number_text[0].islower():
+                number_text = f"{p.capitalize()} {number_text}"
             reading_sentence = number_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             target_text = fix_pronouns_in_text(target_7_maths[target], p, p_poss)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            reading_target_sentence = f"For the next term, {p.capitalize()} should {lowercase_first(target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
@@ -371,14 +392,17 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
                 attitude_sentence += '.'
             
             science_text = fix_pronouns_in_text(science_7_sci[achieve], p, p_poss)
-            if science_text[0].islower():
-                science_text = f"{p} {science_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if science_text.lower().startswith(f"{p} "):
+                science_text = f"{p.capitalize()}{science_text[len(p):]}"
+            elif science_text[0].islower():
+                science_text = f"{p.capitalize()} {science_text}"
             reading_sentence = science_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             target_text = fix_pronouns_in_text(target_7_sci[target], p, p_poss)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            reading_target_sentence = f"For the next term, {p.capitalize()} should {lowercase_first(target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
@@ -396,26 +420,32 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
                 attitude_sentence += '.'
             
             reading_text = fix_pronouns_in_text(reading_8_eng[achieve], p, p_poss)
-            if reading_text[0].islower():
-                reading_text = f"{p} {reading_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if reading_text.lower().startswith(f"{p} "):
+                reading_text = f"{p.capitalize()}{reading_text[len(p):]}"
+            elif reading_text[0].islower():
+                reading_text = f"{p.capitalize()} {reading_text}"
             reading_sentence = f"In reading, {reading_text}"
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             writing_text = fix_pronouns_in_text(writing_8_eng[achieve], p, p_poss)
-            if writing_text[0].islower():
-                writing_text = f"{p} {writing_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if writing_text.lower().startswith(f"{p} "):
+                writing_text = f"{p.capitalize()}{writing_text[len(p):]}"
+            elif writing_text[0].islower():
+                writing_text = f"{p.capitalize()} {writing_text}"
             writing_sentence = f"In writing, {writing_text}"
             if not writing_sentence.endswith('.'):
                 writing_sentence += '.'
             
             reading_target_text = fix_pronouns_in_text(target_8_eng[target], p, p_poss)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(reading_target_text)}"
+            reading_target_sentence = f"For the next term, {p.capitalize()} should {lowercase_first(reading_target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
             writing_target_text = fix_pronouns_in_text(target_write_8_eng[target], p, p_poss)
-            writing_target_sentence = f"Additionally, {p} should {lowercase_first(writing_target_text)}"
+            writing_target_sentence = f"Additionally, {p.capitalize()} should {lowercase_first(writing_target_text)}"
             if not writing_target_sentence.endswith('.'):
                 writing_target_sentence += '.'
             
@@ -429,14 +459,17 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
                 attitude_sentence += '.'
             
             maths_text = fix_pronouns_in_text(maths_8_maths[achieve], p, p_poss)
-            if maths_text[0].islower():
-                maths_text = f"{p} {maths_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if maths_text.lower().startswith(f"{p} "):
+                maths_text = f"{p.capitalize()}{maths_text[len(p):]}"
+            elif maths_text[0].islower():
+                maths_text = f"{p.capitalize()} {maths_text}"
             reading_sentence = maths_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             target_text = fix_pronouns_in_text(target_8_maths[target], p, p_poss)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            reading_target_sentence = f"For the next term, {p.capitalize()} should {lowercase_first(target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
@@ -452,14 +485,17 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
                 attitude_sentence += '.'
             
             science_text = fix_pronouns_in_text(science_8_sci[achieve], p, p_poss)
-            if science_text[0].islower():
-                science_text = f"{p} {science_text}"
+            # FIX: Capitalize pronoun if it's at the start of the sentence
+            if science_text.lower().startswith(f"{p} "):
+                science_text = f"{p.capitalize()}{science_text[len(p):]}"
+            elif science_text[0].islower():
+                science_text = f"{p.capitalize()} {science_text}"
             reading_sentence = science_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             target_text = fix_pronouns_in_text(target_8_sci[target], p, p_poss)
-            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            reading_target_sentence = f"For the next term, {p.capitalize()} should {lowercase_first(target_text)}"
             if not reading_target_sentence.endswith('.'):
                 reading_target_sentence += '.'
             
@@ -467,7 +503,7 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             closer_sentence = random.choice(closer_8_sci)
             writing_sentence = ""
 
-    # Optional attitude target - MOVED TO END
+    # Optional attitude target
     if attitude_target:
         attitude_target = sanitize_input(attitude_target)
         attitude_target_sentence = f"{lowercase_first(attitude_target)}"
@@ -483,7 +519,7 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
         reading_target_sentence,
         writing_target_sentence,
         closer_sentence,
-        attitude_target_sentence  # Now at the end
+        attitude_target_sentence
     ]
 
     comment = " ".join([c for c in comment_parts if c])
@@ -591,54 +627,90 @@ st.markdown("<br>", unsafe_allow_html=True)
 if app_mode == "Single Student":
     st.subheader("👤 Single Student Entry")
     
-    if 'form_submitted' not in st.session_state:
-        st.session_state.form_submitted = False
+    # Initialize session state for form values
+    if 'form_subject' not in st.session_state:
+        st.session_state.form_subject = "English"
+    if 'form_year' not in st.session_state:
+        st.session_state.form_year = 5
+    if 'form_name' not in st.session_state:
+        st.session_state.form_name = ""
+    if 'form_gender' not in st.session_state:
+        st.session_state.form_gender = "Male"
+    if 'form_att' not in st.session_state:
+        st.session_state.form_att = 75
+    if 'form_achieve' not in st.session_state:
+        st.session_state.form_achieve = 75
+    if 'form_target' not in st.session_state:
+        st.session_state.form_target = 75
+    if 'form_attitude_target' not in st.session_state:
+        st.session_state.form_attitude_target = ""
     
-    with st.form("single_student_form", clear_on_submit=True):
+    with st.form("single_student_form", clear_on_submit=False):  # Changed clear_on_submit to False
         col1, col2 = st.columns(2)
         
         with col1:
-            subject = st.selectbox("Subject", ["English", "Maths", "Science"])
-            year = st.selectbox("Year", [5, 7, 8])
+            # Use session state values with keys to preserve them
+            subject = st.selectbox("Subject", ["English", "Maths", "Science"], 
+                                 key='form_subject', index=["English", "Maths", "Science"].index(st.session_state.form_subject))
+            year = st.selectbox("Year", [5, 7, 8], 
+                              key='form_year', index=[5, 7, 8].index(st.session_state.form_year))
             name = st.text_input("Student Name", placeholder="Enter first name only", 
-                                 key='student_name_input')
-            gender = st.selectbox("Gender", ["Male", "Female"])
+                               key='form_name', value=st.session_state.form_name)
+            gender = st.selectbox("Gender", ["Male", "Female"], 
+                                key='form_gender', index=["Male", "Female"].index(st.session_state.form_gender))
         
         with col2:
             att = st.selectbox("Attitude Band", 
                              options=[90,85,80,75,70,65,60,55,40],
-                             index=3)
+                             key='form_att',
+                             index=[90,85,80,75,70,65,60,55,40].index(st.session_state.form_att))
             
             achieve = st.selectbox("Achievement Band",
                                  options=[90,85,80,75,70,65,60,55,40],
-                                 index=3)
+                                 key='form_achieve',
+                                 index=[90,85,80,75,70,65,60,55,40].index(st.session_state.form_achieve))
             
             target = st.selectbox("Target Band",
                                 options=[90,85,80,75,70,65,60,55,40],
-                                index=3)
+                                key='form_target',
+                                index=[90,85,80,75,70,65,60,55,40].index(st.session_state.form_target))
             
             st.caption("💡 Use dropdowns for faster input. Tab key moves between fields.")
         
         attitude_target = st.text_area("Optional Attitude Next Steps",
                                      placeholder="E.g., continue to participate actively in class discussions...",
                                      height=60,
-                                     key='attitude_target_input')
+                                     key='form_attitude_target',
+                                     value=st.session_state.form_attitude_target)
         
         col_submit = st.columns([3, 1])
         with col_submit[1]:
             submitted = st.form_submit_button("🚀 Generate Comment", use_container_width=True)
     
-    if submitted and name:
+    if submitted:
+        if not name:
+            st.error("Please enter a student name")
+            st.stop()
+        
         if not validate_upload_rate():
             st.stop()
         
+        # Update session state with current form values
+        st.session_state.form_subject = subject
+        st.session_state.form_year = year
+        st.session_state.form_name = name
+        st.session_state.form_gender = gender
+        st.session_state.form_att = att
+        st.session_state.form_achieve = achieve
+        st.session_state.form_target = target
+        st.session_state.form_attitude_target = attitude_target
+        
         name = sanitize_input(name)
-        pronouns = get_pronouns(gender)
+        pronouns = get_pronouns(gender.lower())
         
         with st.spinner("Generating comment..."):
             comment = generate_comment(subject, year, name, gender, att, achieve, 
-                                     target, pronouns, 
-                                     st.session_state.get('attitude_target_input', ''))
+                                     target, pronouns, attitude_target)
             char_count = len(comment)
         
         st.session_state.progress = 2
@@ -673,11 +745,9 @@ if app_mode == "Single Student":
         col_reset = st.columns([3, 1])
         with col_reset[1]:
             if st.button("➕ Add Another Student", type="secondary", use_container_width=True):
-                if 'student_name_input' in st.session_state:
-                    st.session_state.student_name_input = ""
-                if 'attitude_target_input' in st.session_state:
-                    st.session_state.attitude_target_input = ""
-                st.session_state.progress = 1
+                # Clear only the name and attitude target, keep other selections
+                st.session_state.form_name = ""
+                st.session_state.form_attitude_target = ""
                 st.rerun()
 
 # ========== BATCH UPLOAD MODE ==========
@@ -884,10 +954,10 @@ if 'all_comments' in st.session_state and st.session_state.all_comments:
             st.session_state.all_comments = []
             st.session_state.progress = 1
             st.success("All comments cleared! Ready for new entries.")
-            if 'student_name_input' in st.session_state:
-                st.session_state.student_name_input = ""
-            if 'attitude_target_input' in st.session_state:
-                st.session_state.attitude_target_input = ""
+            if 'form_name' in st.session_state:
+                st.session_state.form_name = ""
+            if 'form_attitude_target' in st.session_state:
+                st.session_state.form_attitude_target = ""
             st.rerun()
 
 # ========== FOOTER ==========
