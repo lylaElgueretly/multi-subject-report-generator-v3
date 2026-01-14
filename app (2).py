@@ -234,7 +234,9 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             reading_text = fix_pronouns_in_text(reading_5_eng[achieve], p, p_poss)
             if reading_text[0].islower():
-                reading_text = f"{p} {reading_text}"
+                reading_text = f"{p.capitalize()} {reading_text}"
+            else:
+                reading_text = capitalize_first(reading_text)
             reading_sentence = f"In reading, {reading_text}"
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
@@ -267,6 +269,50 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             if not attitude_sentence.endswith('.'):
                 attitude_sentence += '.'
             
+            # Use number_bank for achievement
+            number_text = fix_pronouns_in_text(number_5_maths[achieve], p, p_poss)
+            if number_text[0].islower():
+                number_text = f"{p.capitalize()} {number_text}"
+            else:
+                number_text = capitalize_first(number_text)
+            reading_sentence = number_text
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
+            
+            writing_sentence = ""
+            
+            target_text = fix_pronouns_in_text(target_5_maths[target], p, p_poss)
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
+            
+            writing_target_sentence = ""
+            closer_sentence = random.choice(closer_5_maths)
+            
+        else:  # Science
+            opening = random.choice(opening_5_sci)
+            attitude_text = fix_pronouns_in_text(attitude_5_sci[att], p, p_poss)
+            attitude_sentence = f"{opening} {name} {attitude_text}"
+            if not attitude_sentence.endswith('.'):
+                attitude_sentence += '.'
+            
+            science_text = fix_pronouns_in_text(science_5_sci[achieve], p, p_poss)
+            if science_text[0].islower():
+                science_text = f"{p.capitalize()} {science_text}"
+            else:
+                science_text = capitalize_first(science_text)
+            reading_sentence = science_text
+            if not reading_sentence.endswith('.'):
+                reading_sentence += '.'
+            
+            target_text = fix_pronouns_in_text(target_5_sci[target], p, p_poss)
+            reading_target_sentence = f"For the next term, {p} should {lowercase_first(target_text)}"
+            if not reading_target_sentence.endswith('.'):
+                reading_target_sentence += '.'
+            
+            writing_target_sentence = ""
+            closer_sentence = random.choice(closer_5_sci)
+            writing_sentence = ""
             # Use number_bank for achievement
            number_text = fix_pronouns_in_text(number_5_maths[achieve], p, p_poss)
             if number_text[0].islower():
