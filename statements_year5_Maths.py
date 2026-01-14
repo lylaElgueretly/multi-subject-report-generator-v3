@@ -35,7 +35,7 @@ number_bank = {
     60: "applied number skills with help and showed developing understanding",
     55: "needed step-by-step support for calculations and concepts",
     40: "struggled with number operations and needed consistent guidance",
-    0: "found applying number skills very challenging, even with support"
+    0:  "found applying number skills very challenging, even with support"
 }
 
 problem_solving_bank = {
@@ -48,7 +48,7 @@ problem_solving_bank = {
     60: "attempted simple problems with help but needed structure for more complex tasks",
     55: "found problem-solving challenging and required detailed guidance",
     40: "struggled to approach problems independently and needed constant support",
-    0: "was unable to attempt problem-solving without significant guidance"
+    0:  "was unable to attempt problem-solving without significant guidance"
 }
 
 target_bank = {
@@ -61,7 +61,7 @@ target_bank = {
     60: "practise completing calculations independently and applying learned methods",
     55: "work on following problem-solving steps with guidance",
     40: "focus on understanding basic concepts and building confidence in calculations",
-    0: "begin with highly supported tasks to develop foundational Maths skills"
+    0:  "begin with highly supported tasks to develop foundational Maths skills"
 }
 
 closer_bank = [
