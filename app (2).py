@@ -191,7 +191,9 @@ def get_pronouns(gender):
 
 def lowercase_first(text):
     return text[0].lower() + text[1:] if text else ""
-
+def capitalize_first(text):
+    return text[0].upper() + text[1:] if text else ""
+    
 def truncate_comment(comment, target=TARGET_CHARS):
     if len(comment) <= target:
         return comment
@@ -239,7 +241,9 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             writing_text = fix_pronouns_in_text(writing_5_eng[achieve], p, p_poss)
             if writing_text[0].islower():
-                writing_text = f"{p} {writing_text}"
+                writing_text = f"{p.capitalize()} {writing_text}"
+            else:
+                writing_text = capitalize_first(writing_text)
             writing_sentence = f"In writing, {writing_text}"
             if not writing_sentence.endswith('.'):
                 writing_sentence += '.'
@@ -264,13 +268,14 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
                 attitude_sentence += '.'
             
             # Use number_bank for achievement
-            number_text = fix_pronouns_in_text(number_5_maths[achieve], p, p_poss)
+           number_text = fix_pronouns_in_text(number_5_maths[achieve], p, p_poss)
             if number_text[0].islower():
-                number_text = f"{p} {number_text}"
+                number_text = f"{p.capitalize()} {number_text}"
+            else:
+                number_text = capitalize_first(number_text)
             reading_sentence = number_text
             if not reading_sentence.endswith('.'):
-                reading_sentence += '.'
-            
+                reading_sentence += '.' 
             writing_sentence = ""
             
             target_text = fix_pronouns_in_text(target_5_maths[target], p, p_poss)
@@ -290,7 +295,9 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             science_text = fix_pronouns_in_text(science_5_sci[achieve], p, p_poss)
             if science_text[0].islower():
-                science_text = f"{p} {science_text}"
+                science_text = f"{p.capitalize()} {science_text}"
+            else:
+                science_text = capitalize_first(science_text)
             reading_sentence = science_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
@@ -315,14 +322,18 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             reading_text = fix_pronouns_in_text(reading_7_eng[achieve], p, p_poss)
             if reading_text[0].islower():
-                reading_text = f"{p} {reading_text}"
+                reading_text = f"{p.capitalize()} {reading_text}"
+            else:
+                reading_text = capitalize_first(reading_text)
             reading_sentence = f"In reading, {reading_text}"
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             writing_text = fix_pronouns_in_text(writing_7_eng[achieve], p, p_poss)
             if writing_text[0].islower():
-                writing_text = f"{p} {writing_text}"
+                writing_text = f"{p.capitalize()} {writing_text}"
+            else:
+                writing_text = capitalize_first(writing_text)
             writing_sentence = f"In writing, {writing_text}"
             if not writing_sentence.endswith('.'):
                 writing_sentence += '.'
@@ -349,7 +360,9 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             # Use number and algebra bank
             number_text = fix_pronouns_in_text(number_7_maths[achieve], p, p_poss)
             if number_text[0].islower():
-                number_text = f"{p} {number_text}"
+                number_text = f"{p.capitalize()} {number_text}"
+            else:
+                number_text = capitalize_first(number_text)
             reading_sentence = number_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
@@ -372,7 +385,9 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             science_text = fix_pronouns_in_text(science_7_sci[achieve], p, p_poss)
             if science_text[0].islower():
-                science_text = f"{p} {science_text}"
+                science_text = f"{p.capitalize()} {science_text}"
+            else:
+                science_text = capitalize_first(science_text)
             reading_sentence = science_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
@@ -385,8 +400,7 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             writing_target_sentence = ""
             closer_sentence = random.choice(closer_7_sci)
             writing_sentence = ""
-    
-    # Year 8
+   # Year 8
     else:  # year == 8
         if subject == "English":
             opening = random.choice(opening_8_eng)
@@ -397,14 +411,18 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             reading_text = fix_pronouns_in_text(reading_8_eng[achieve], p, p_poss)
             if reading_text[0].islower():
-                reading_text = f"{p} {reading_text}"
+                reading_text = f"{p.capitalize()} {reading_text}"
+            else:
+                reading_text = capitalize_first(reading_text)
             reading_sentence = f"In reading, {reading_text}"
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
             
             writing_text = fix_pronouns_in_text(writing_8_eng[achieve], p, p_poss)
             if writing_text[0].islower():
-                writing_text = f"{p} {writing_text}"
+                writing_text = f"{p.capitalize()} {writing_text}"
+            else:
+                writing_text = capitalize_first(writing_text)
             writing_sentence = f"In writing, {writing_text}"
             if not writing_sentence.endswith('.'):
                 writing_sentence += '.'
@@ -430,7 +448,9 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             maths_text = fix_pronouns_in_text(maths_8_maths[achieve], p, p_poss)
             if maths_text[0].islower():
-                maths_text = f"{p} {maths_text}"
+                maths_text = f"{p.capitalize()} {maths_text}"
+            else:
+                maths_text = capitalize_first(maths_text)
             reading_sentence = maths_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
@@ -453,7 +473,9 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             
             science_text = fix_pronouns_in_text(science_8_sci[achieve], p, p_poss)
             if science_text[0].islower():
-                science_text = f"{p} {science_text}"
+                science_text = f"{p.capitalize()} {science_text}"
+            else:
+                science_text = capitalize_first(science_text)
             reading_sentence = science_text
             if not reading_sentence.endswith('.'):
                 reading_sentence += '.'
@@ -466,7 +488,6 @@ def generate_comment(subject, year, name, gender, att, achieve, target, pronouns
             writing_target_sentence = ""
             closer_sentence = random.choice(closer_8_sci)
             writing_sentence = ""
-
     # Optional attitude target - MOVED TO END
     if attitude_target:
         attitude_target = sanitize_input(attitude_target)
