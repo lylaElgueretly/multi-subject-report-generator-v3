@@ -541,36 +541,32 @@ def generate_comment(subject, year, name, gender, att, achieve, target, optional
         attitude_text = fix_pronouns_in_text(attitude_chem[att], p, p_poss)
         attitude_sentence = f"{opening} {name} {attitude_text}"
         
-        # FIXED: Handle Chemistry achievement text which may have multiple sentences
+        # Handle Chemistry achievement text which may have multiple sentences
         chemistry_text = fix_pronouns_in_text(chemistry_chem[achieve], p, p_poss)
         chemistry_text = ensure_proper_capitalization(chemistry_text)
         
-        # Split into sentences and ensure each starts with pronoun if needed
+        # Split into sentences and ensure each starts with pronoun
         sentences = re.split(r'(?<=[.!?])\s+', chemistry_text)
         fixed_sentences = []
         
         for sentence in sentences:
             if sentence:
-                # Remove any trailing period for processing
+                # Remove any trailing period
                 sentence = sentence.strip()
                 if sentence.endswith('.'):
                     sentence = sentence[:-1]
                 
-                # If sentence starts with a capital letter that's not a pronoun, it might need fixing
-                # Check if it's a verb starting sentence (like "Grasped", "Explained")
+                # If sentence starts with uppercase verb (no pronoun), add pronoun
                 if sentence and sentence[0].isupper():
-                    # List of common verbs that might start sentences without pronouns
-                    verb_starters = ["Grasped", "Explained", "Demonstrated", "Showed", "Applied", 
-                                    "Used", "Analyzed", "Calculated", "Solved", "Identified",
-                                    "Described", "Compared", "Contrasted", "Evaluated"]
-                    
-                    for verb in verb_starters:
-                        if sentence.startswith(verb):
+                    words = sentence.split()
+                    if len(words) > 0:
+                        first_word = words[0]
+                        # Check if it's a verb ending in -ed
+                        if first_word.endswith('ed'):
                             sentence = f"{p.capitalize()} {lowercase_first(sentence)}"
-                            break
-                # If sentence starts with lowercase, add pronoun
-                elif sentence and sentence[0].islower():
-                    sentence = f"{p.capitalize()} {sentence}"
+                        # Check specific verbs
+                        elif first_word in ['Grasped', 'Explained', 'Demonstrated', 'Showed']:
+                            sentence = f"{p.capitalize()} {lowercase_first(sentence)}"
                 
                 fixed_sentences.append(sentence + '.')
         
@@ -593,6 +589,31 @@ def generate_comment(subject, year, name, gender, att, achieve, target, optional
         # Default fallback if subject not recognized
         comment_parts = [f"{name} has worked in {subject} this term."]
     
+    # ADD OPTIONAL TEXT TO COMMENT_PARTS (BEFORE JOINING)
+    if optional_text:
+        optional_text = str(optional_text).strip()
+        if optional_text:
+            # Sanitize and ensure proper formatting
+            optional_text = sanitize_input(optional_text, max_length=200)
+            
+            # Ensure optional text starts with capital letter
+            if optional_text and optional_text[0].islower():
+                optional_text = optional_text[0].upper() + optional_text[1:]
+            
+            # Add "Additionally" prefix and ensure it ends with period
+            optional_sentence = f"Additionally, {lowercase_first(optional_text)}"
+            if not optional_sentence.endswith('.'):
+                optional_sentence += '.'
+            
+            # Add to comment parts list (at the end, before closer if exists)
+            if comment_parts and 'closer_sentence' in locals():
+                # Insert before the closer sentence
+                closer_index = len(comment_parts) - 1
+                comment_parts.insert(closer_index, optional_sentence)
+            else:
+                # Just append to the end
+                comment_parts.append(optional_sentence)
+    
     # Ensure all sentences end with period
     for i in range(len(comment_parts)):
         if not comment_parts[i].endswith('.'):
@@ -601,53 +622,15 @@ def generate_comment(subject, year, name, gender, att, achieve, target, optional
     # Join comment parts
     comment = " ".join([c for c in comment_parts if c])
     
-    # ADD OPTIONAL TEXT AT THE VERY END (AFTER EVERYTHING ELSE)
-    # IMPORTANT FIX: Check if optional_text is provided and not empty
-    if optional_text is not None and str(optional_text).strip():
-        optional_text = str(optional_text).strip()
-        if optional_text:
-            # Sanitize and ensure proper formatting
-            optional_text = sanitize_input(optional_text)
-            
-            # Ensure optional text starts with capital letter and ends with period
-            if not optional_text[0].isupper():
-                optional_text = optional_text[0].upper() + optional_text[1:]
-            if not optional_text.endswith('.'):
-                optional_text += '.'
-            
-            # Add to the end of the comment with proper punctuation
-            if comment.strip().endswith('.'):
-                comment = comment.rstrip()
-                comment = comment[:-1]  # Remove the last period
-                comment += f". Additionally, {lowercase_first(optional_text)}"
-            else:
-                comment += f". Additionally, {lowercase_first(optional_text)}"
-    
-    # Truncate after adding optional text
+    # Truncate to target length
     comment = truncate_comment(comment, TARGET_CHARS)
     
     # Ensure comment ends with period
     if not comment.endswith('.'):
         comment = comment.rstrip(' ,;') + '.'
     
-    # Final capitalization check and pronoun fix
+    # Final capitalization check
     comment = ensure_proper_capitalization(comment)
-    
-    # Final fix: Replace any remaining " he " at sentence start with "He "
-    comment = re.sub(r'(^|\. )h(e |im |is |er )', lambda m: m.group(0).replace('h', 'H'), comment)
-    
-    # Additional fix for verb-starting sentences
-    verb_fixes = [
-        (r'(^|\. )Grasped ', r'\1He grasped '),
-        (r'(^|\. )Explained ', r'\1He explained '),
-        (r'(^|\. )Demonstrated ', r'\1He demonstrated '),
-        (r'(^|\. )Showed ', r'\1He showed '),
-        (r'(^|\. )Applied ', r'\1He applied '),
-        (r'(^|\. )Used ', r'\1He used '),
-    ]
-    
-    for pattern, replacement in verb_fixes:
-        comment = re.sub(pattern, replacement, comment)
     
     return comment
 # ========== STREAMLIT APP LAYOUT ==========
